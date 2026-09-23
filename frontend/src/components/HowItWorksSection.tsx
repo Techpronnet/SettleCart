@@ -254,10 +254,9 @@ export function HowItWorksSection() {
               </div>
             </div>
 
-            {/* Visual stage connection dot */}
-            <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-400 font-mono">
+            {/* Visual stage footer */}
+            <div className="mt-4 pt-3 border-t border-stone-100 text-[11px] text-stone-400 font-mono">
               <span>CUSTOMER DISCOVERY</span>
-              <span className="w-2 h-2 rounded-full bg-teal-600" />
             </div>
           </div>
 
@@ -407,10 +406,9 @@ export function HowItWorksSection() {
               </div>
             </div>
 
-            {/* Visual stage connection dot */}
-            <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-400 font-mono">
+            {/* Visual stage footer */}
+            <div className="mt-4 pt-3 border-t border-stone-100 text-[11px] text-stone-400 font-mono">
               <span>ORDER PLACEMENT</span>
-              <span className="w-2 h-2 rounded-full bg-teal-600" />
             </div>
           </div>
 
@@ -529,10 +527,9 @@ export function HowItWorksSection() {
               </div>
             </div>
 
-            {/* Visual stage connection dot */}
-            <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-400 font-mono">
+            {/* Visual stage footer */}
+            <div className="mt-4 pt-3 border-t border-stone-100 text-[11px] text-stone-400 font-mono">
               <span>STORE FULFILLMENT</span>
-              <span className="w-2 h-2 rounded-full bg-teal-600" />
             </div>
           </div>
 
@@ -662,10 +659,9 @@ export function HowItWorksSection() {
               </div>
             </div>
 
-            {/* Visual stage connection dot */}
-            <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-400 font-mono">
+            {/* Visual stage footer */}
+            <div className="mt-4 pt-3 border-t border-stone-100 text-[11px] text-stone-400 font-mono">
               <span>FINAL HANDOVER</span>
-              <span className="w-2 h-2 rounded-full bg-emerald-600" />
             </div>
           </div>
 

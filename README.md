@@ -109,3 +109,4 @@ When importing or configuring the project on Vercel:
 - **Install Command**: `npm install`
 
 Every push to the `main` branch automatically triggers a production deployment to `https://settle-cart.vercel.app`.
+

@@ -40,66 +40,65 @@ export function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#fafaf9]/95 backdrop-blur-md border-b border-stone-200/80 transition-all">
-      <div className="site-container">
-        <div className="flex items-center justify-between h-16 sm:h-20">
-          
-          {/* Logo */}
-          <Link
-            href="/"
-            className="flex items-center gap-2.5 group shrink-0 focus-visible:outline-2 focus-visible:outline-stone-900 rounded-md py-1"
-          >
-            <span className="w-8 h-8 rounded-md bg-stone-900 text-stone-50 flex items-center justify-center font-semibold text-sm tracking-tight shadow-sm">
-              S
-            </span>
-            <div className="flex items-baseline gap-1.5">
+    <>
+      <header className="sticky top-0 z-40 w-full bg-[#fafaf9]/95 backdrop-blur-md border-b border-stone-200/80 transition-all">
+        <div className="site-container">
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            
+            {/* Logo */}
+            <Link
+              href="/"
+              className="flex items-center gap-2.5 group shrink-0 focus-visible:outline-2 focus-visible:outline-stone-900 rounded-md py-1"
+            >
+              <span className="w-8 h-8 rounded-md bg-stone-900 text-stone-50 flex items-center justify-center font-semibold text-sm tracking-tight shadow-sm">
+                S
+              </span>
               <span className="text-xl font-bold tracking-tight text-stone-900 font-sans">
                 SettleCart
               </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-teal-700" />
-            </div>
-          </Link>
+            </Link>
 
-          {/* Desktop & Laptop Navigation (Visible on lg: >= 1024px) */}
-          <nav
-            aria-label="Main Navigation"
-            className="hidden lg:flex items-center gap-5 xl:gap-7 text-sm font-medium text-stone-600"
-          >
-            {navLinks.map((link) => (
+            {/* Desktop & Laptop Navigation (Visible on lg: >= 1024px) */}
+            <nav
+              aria-label="Main Navigation"
+              className="hidden lg:flex items-center gap-5 xl:gap-7 text-sm font-medium text-stone-600"
+            >
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="hover:text-stone-950 transition-colors py-1.5 rounded-md focus-visible:outline-2 focus-visible:outline-stone-900"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </nav>
+
+            {/* Action CTAs */}
+            <div className="flex items-center gap-3 sm:gap-4">
               <a
-                key={link.href}
-                href={link.href}
-                className="hover:text-stone-950 transition-colors py-1.5 rounded-md focus-visible:outline-2 focus-visible:outline-stone-900"
+                href="#waitlist"
+                className="hidden sm:inline-flex items-center justify-center px-4 py-2.5 rounded-md text-xs sm:text-sm font-medium text-white bg-stone-900 hover:bg-stone-800 transition-colors shadow-sm min-h-[40px] focus-visible:outline-2 focus-visible:outline-stone-900"
               >
-                {link.label}
+                Join the Waitlist
               </a>
-            ))}
-          </nav>
 
-          {/* Action CTAs */}
-          <div className="flex items-center gap-3 sm:gap-4">
-            <a
-              href="#waitlist"
-              className="hidden sm:inline-flex items-center justify-center px-4 py-2.5 rounded-md text-xs sm:text-sm font-medium text-white bg-stone-900 hover:bg-stone-800 transition-colors shadow-sm min-h-[40px] focus-visible:outline-2 focus-visible:outline-stone-900"
-            >
-              Join the Waitlist
-            </a>
+              {/* Mobile / Tablet Menu Trigger (< lg: < 1024px) */}
+              <button
+                type="button"
+                onClick={() => setMobileOpen(!mobileOpen)}
+                className="lg:hidden p-2.5 rounded-md text-stone-700 hover:text-stone-950 hover:bg-stone-100 min-h-[44px] min-w-[44px] flex items-center justify-center focus-visible:outline-2 focus-visible:outline-stone-900 transition-colors"
+                aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
+                aria-expanded={mobileOpen}
+                aria-controls="mobile-navigation-drawer"
+              >
+                {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
 
-            {/* Mobile / Tablet Menu Trigger (< lg: < 1024px) */}
-            <button
-              type="button"
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden p-2.5 rounded-md text-stone-700 hover:text-stone-950 hover:bg-stone-100 min-h-[44px] min-w-[44px] flex items-center justify-center focus-visible:outline-2 focus-visible:outline-stone-900 transition-colors"
-              aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
-              aria-expanded={mobileOpen}
-              aria-controls="mobile-navigation-drawer"
-            >
-              {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
           </div>
-
         </div>
-      </div>
+      </header>
 
       {/* Accessible Full Mobile & Tablet Navigation Drawer Overlay */}
       {mobileOpen && (
@@ -108,11 +107,35 @@ export function Navbar() {
           role="dialog"
           aria-modal="true"
           aria-label="Site Navigation"
-          className="fixed inset-0 top-[65px] sm:top-[81px] z-50 bg-[#fafaf9] lg:hidden flex flex-col justify-between overflow-y-auto px-6 py-8 border-t border-stone-200 shadow-xl transition-all"
+          className="fixed inset-0 z-[100] bg-[#fafaf9] lg:hidden flex flex-col justify-between overflow-y-auto px-6 py-6 transition-all"
         >
+          {/* Top header row with Brand & Close Button */}
+          <div className="flex items-center justify-between pb-5 border-b border-stone-200/80">
+            <Link
+              href="/"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2.5"
+            >
+              <span className="w-8 h-8 rounded-md bg-stone-900 text-stone-50 flex items-center justify-center font-semibold text-sm tracking-tight shadow-sm">
+                S
+              </span>
+              <span className="text-xl font-bold tracking-tight text-stone-900 font-sans">
+                SettleCart
+              </span>
+            </Link>
+            <button
+              type="button"
+              onClick={() => setMobileOpen(false)}
+              className="p-2.5 rounded-md text-stone-700 hover:text-stone-950 hover:bg-stone-200/60 min-h-[44px] min-w-[44px] flex items-center justify-center focus-visible:outline-2 focus-visible:outline-stone-900"
+              aria-label="Close navigation menu"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+
           {/* Nav Links Stack with large touch targets */}
-          <div className="space-y-1">
-            <div className="text-[11px] font-mono uppercase tracking-wider text-stone-400 mb-3 px-3">
+          <div className="py-6 space-y-1">
+            <div className="text-[11px] font-mono uppercase tracking-wider text-stone-400 mb-3 px-2">
               Explore SettleCart
             </div>
             {navLinks.map((link) => (
@@ -120,7 +143,7 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-between py-3.5 px-3 rounded-lg text-lg font-semibold text-stone-800 hover:text-stone-950 hover:bg-stone-100/70 transition-colors min-h-[48px]"
+                className="flex items-center justify-between py-3.5 px-3 rounded-lg text-lg font-semibold text-stone-800 hover:text-stone-950 hover:bg-stone-200/50 transition-colors min-h-[48px]"
               >
                 <span>{link.label}</span>
                 <ArrowRight className="w-4 h-4 text-stone-400" />
@@ -129,7 +152,7 @@ export function Navbar() {
           </div>
 
           {/* Drawer Footer Actions */}
-          <div className="mt-8 pt-6 border-t border-stone-200/80 space-y-4">
+          <div className="pt-6 border-t border-stone-200/80 space-y-4">
             <a
               href="#waitlist"
               onClick={() => setMobileOpen(false)}
@@ -151,6 +174,6 @@ export function Navbar() {
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }

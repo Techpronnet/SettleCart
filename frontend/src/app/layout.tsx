@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "font-awesome/css/font-awesome.min.css";
 import { AosProvider } from "@/components/AosProvider";
 
 export const metadata: Metadata = {
