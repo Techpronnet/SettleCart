@@ -1,0 +1,25 @@
+[
+  {
+    "id": "wl_v9c7hea",
+    "role": "vendor",
+    "name": "Tariq Alabi",
+    "email": "tariq@fashionhub.ng",
+    "phone": "08023456789",
+    "businessName": "Lekki Luxe Apparel",
+    "businessType": "Fashion & Apparel",
+    "city": "Lagos",
+    "createdAt": "2026-09-23T10:00:45.824Z",
+    "queueNumber": 121
+  },
+  {
+    "id": "wl_9e95z2t",
+    "fullName": "Ngozi Adeleke",
+    "email": "ngozi@adirelagos.com",
+    "phone": "+234 803 456 7890",
+    "businessName": "Adire Lagos Studio",
+    "businessType": "Fashion",
+    "city": "Lagos",
+    "sellingDescription": "Bespoke contemporary African apparel and dyed silks",
+    "createdAt": "2026-09-23T10:30:21.096Z"
+  }
+]
