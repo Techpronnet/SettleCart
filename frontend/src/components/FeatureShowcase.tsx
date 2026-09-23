@@ -1,4 +1,4 @@
-import { Store, Layers, Coins, Bike, CheckCircle, ArrowUpRight } from "lucide-react";
+import { Store, Layers, Coins, Bike, CheckCircle } from "lucide-react";
 
 export function FeatureShowcase() {
   const features = [

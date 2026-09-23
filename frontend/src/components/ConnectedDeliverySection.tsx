@@ -8,7 +8,6 @@ import {
   Bike,
   MapPin,
   Clock,
-  ArrowRight,
   Lock,
   Smartphone,
   Wallet,

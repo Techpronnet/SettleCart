@@ -1,4 +1,4 @@
-import { ArrowRight, ShoppingBag, ShieldCheck, MapPin } from "lucide-react";
+import { ShoppingBag, ShieldCheck } from "lucide-react";
 
 export function ForCustomersSection() {
   const steps = [

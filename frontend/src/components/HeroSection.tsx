@@ -3,16 +3,12 @@
 import React, { useState } from "react";
 import {
   ArrowRight,
-  Store,
   MapPin,
-  ShoppingBag,
   Plus,
   Minus,
   CheckCircle2,
   Truck,
   Check,
-  Clock,
-  Package,
 } from "lucide-react";
 
 export function HeroSection() {

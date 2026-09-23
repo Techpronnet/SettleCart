@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { ShieldCheck, CheckCircle2, AlertTriangle, ArrowRight, RefreshCw, KeyRound, Truck, Check, Wallet } from "lucide-react";
+import { CheckCircle2, AlertTriangle, RefreshCw, KeyRound, Truck, Check, Wallet } from "lucide-react";
 
 export function InteractiveVerification() {
   const sampleCode = "729415";
   const [inputCode, setInputCode] = useState("");
   const [status, setStatus] = useState<"idle" | "validating" | "success" | "error">("idle");
-  const [activeTab, setActiveTab] = useState<"demo" | "architecture">("demo");
 
   const handleValidate = () => {
     if (!inputCode) return;

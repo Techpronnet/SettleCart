@@ -1,4 +1,4 @@
-import { Store, Bike, ShoppingBag, CheckCircle2, TrendingUp, ShieldAlert, Clock, Sparkles } from "lucide-react";
+import { Store, Bike, ShoppingBag, CheckCircle2 } from "lucide-react";
 
 export function StakeholderSection() {
   return (

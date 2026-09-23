@@ -1,4 +1,4 @@
-import { ShoppingBag, Store, Bike, CheckCircle2, ArrowRight, ShieldCheck, CreditCard, Sparkles } from "lucide-react";
+import { ShoppingBag, Store, Bike, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
 
 export function HowItWorks() {
   const steps = [

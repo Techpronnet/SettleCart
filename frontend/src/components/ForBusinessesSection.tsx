@@ -1,4 +1,4 @@
-import { Check, ArrowRight } from "lucide-react";
+import { Check } from "lucide-react";
 
 export function ForBusinessesSection() {
   const features = [

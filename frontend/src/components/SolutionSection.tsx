@@ -1,5 +1,3 @@
-import { ArrowRight } from "lucide-react";
-
 export function SolutionSection() {
   const nodes = [
     { label: "Business", role: "Merchant", note: "Identity & onboarding" },

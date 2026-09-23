@@ -1,5 +1,3 @@
-import { Shield, Check, Lock, FileText, KeyRound } from "lucide-react";
-
 export function TrustSection() {
   const pillars = [
     {

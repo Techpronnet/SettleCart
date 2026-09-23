@@ -14,7 +14,8 @@ export interface WaitlistSubmission {
   createdAt: string;
 }
 
-const DATA_FILE = path.join(process.cwd(), "waitlist_entries.json");
+const DATA_DIR = process.env.VERCEL ? "/tmp" : process.cwd();
+const DATA_FILE = path.join(DATA_DIR, "waitlist_entries.json");
 
 async function getStoredEntries(): Promise<WaitlistSubmission[]> {
   try {

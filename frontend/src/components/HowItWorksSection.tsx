@@ -7,15 +7,12 @@ import {
   ShoppingBag,
   CheckCircle2,
   Truck,
-  ArrowRight,
   Clock,
-  Package,
   Plus,
   Minus,
   Check,
   Search,
   Bike,
-  ShieldCheck,
   ChevronRight,
 } from "lucide-react";
 

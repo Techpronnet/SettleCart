@@ -8,10 +8,6 @@ import {
   Truck,
   CheckCircle2,
   Coins,
-  ArrowRight,
-  Layers,
-  Repeat,
-  BadgeCheck,
 } from "lucide-react";
 
 export interface LifecycleStage {
