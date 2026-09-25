@@ -160,8 +160,8 @@ export function ConnectedDeliverySection() {
                 <div className="mt-4 p-3 bg-stone-50 rounded-xl border border-stone-200/70 space-y-2 text-xs">
                   <div className="flex items-center justify-between pb-1.5 border-b border-stone-200/50">
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-stone-900 text-white flex items-center justify-center text-[10px]">
-                        🚴
+                      <span className="w-6 h-6 rounded-full bg-stone-900 text-white flex items-center justify-center">
+                        <Bike className="w-3.5 h-3.5 text-white" />
                       </span>
                       <div>
                         <span className="font-semibold text-stone-900 text-[11px] block leading-tight">

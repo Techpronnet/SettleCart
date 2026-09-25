@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, AlertTriangle, RefreshCw, KeyRound, Truck, Check, Wallet } from "lucide-react";
+import { CheckCircle2, AlertTriangle, RefreshCw, KeyRound, Truck, Check, Wallet, Smartphone, Lock, Bike } from "lucide-react";
 
 export function InteractiveVerification() {
   const sampleCode = "729415";
@@ -50,7 +50,7 @@ export function InteractiveVerification() {
             <div className="flex items-center justify-between pb-6 border-b border-slate-800">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
-                  📱
+                  <Smartphone className="w-5 h-5 text-emerald-400" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-white text-base">Customer Live Tracking</h3>
@@ -69,8 +69,9 @@ export function InteractiveVerification() {
               <div className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-slate-900 border-2 border-emerald-500/40 text-emerald-400 font-mono text-3xl font-extrabold tracking-widest shadow-inner shadow-emerald-500/10">
                 {sampleCode.slice(0, 3)} - {sampleCode.slice(3)}
               </div>
-              <p className="mt-3 text-xs text-slate-400 max-w-sm mx-auto">
-                🔒 Give this 6-digit code to rider <strong className="text-slate-200">Tunde (Bike #LA-29)</strong> only after inspecting and receiving your package.
+              <p className="mt-3 text-xs text-slate-400 max-w-sm mx-auto flex items-center justify-center gap-1.5">
+                <Lock className="w-3.5 h-3.5 shrink-0 text-emerald-400" />
+                <span>Give this 6-digit code to rider <strong className="text-slate-200">Tunde (Bike #LA-29)</strong> only after inspecting and receiving your package.</span>
               </p>
             </div>
 
@@ -96,7 +97,7 @@ export function InteractiveVerification() {
             <div className="flex items-center justify-between pb-6 border-b border-slate-800">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold">
-                  🛵
+                  <Bike className="w-5 h-5 text-teal-400" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-white text-base">Rider Verification Portal</h3>

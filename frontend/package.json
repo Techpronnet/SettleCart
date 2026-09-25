@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --import jiti/register --test --test-force-exit tests/api/*.test.ts",
+    "test:api": "node --import jiti/register --test --test-force-exit tests/api/*.test.ts",
+    "schema:export": "docker exec backend-api-1 python -m app.scripts.export_openapi --output /app/openapi.json && cp ../backend/openapi.json openapi.json",
+    "schema:generate": "openapi-typescript openapi.json -o src/lib/api/schema.d.ts",
+    "schema:sync": "npm run schema:export && npm run schema:generate"
   },
   "dependencies": {
     "aos": "^2.3.4",
@@ -14,6 +19,7 @@
     "font-awesome": "^4.7.0",
     "lucide-react": "^1.47.0",
     "next": "16.3.6",
+    "openapi-fetch": "^0.17.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
@@ -26,6 +32,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
+    "openapi-typescript": "^7.13.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

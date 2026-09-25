@@ -1,0 +1,15 @@
+__pycache__
+*.pyc
+.env
+.venv/
+venv/
+*.egg-info
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+alembic/versions/*.pyc
+waitlist_entries.json
+celerybeat-schedule*
+*.sqlite
+*.db

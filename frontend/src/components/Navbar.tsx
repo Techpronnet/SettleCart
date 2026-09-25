@@ -2,92 +2,109 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, X, Search, ShoppingCart, ArrowRight } from "lucide-react";
+import { useCart, CartCountBadge, CartDrawer } from "./ui/Dialog";
+
+const NAV_LINKS = [
+  { label: "Explore", href: "/marketplace" },
+  { label: "Stores", href: "/#stores" },
+  { label: "Categories", href: "/#categories" },
+  { label: "How It Works", href: "/how-it-works" },
+  { label: "Become a Vendor", href: "/register?as=vendor" },
+];
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { count, setCartOpen } = useCart();
 
-  // Prevent background scrolling while mobile navigation is open
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [mobileOpen]);
 
-  // Support keyboard accessibility: close on Escape key
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && mobileOpen) {
-        setMobileOpen(false);
-      }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileOpen(false);
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [mobileOpen]);
-
-  const navLinks = [
-    { label: "How It Works", href: "#how-it-works" },
-    { label: "For Businesses", href: "#for-businesses" },
-    { label: "For Customers", href: "#for-customers" },
-    { label: "Delivery Network", href: "#delivery" },
-    { label: "Operations", href: "#operations" },
-    { label: "Trust & Security", href: "#trust" },
-  ];
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full bg-[#fafaf9]/95 backdrop-blur-md border-b border-stone-200/80 transition-all">
+      <header
+        className={`sticky top-0 z-40 w-full transition-all ${
+          scrolled
+            ? "bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-[0_1px_12px_rgba(0,0,0,0.06)]"
+            : "bg-white/70 backdrop-blur border-b border-transparent"
+        }`}
+      >
         <div className="site-container">
-          <div className="flex items-center justify-between h-16 sm:h-20">
-            
-            {/* Logo */}
+          <div className="flex items-center justify-between h-16 sm:h-[72px] gap-3">
             <Link
               href="/"
-              className="flex items-center gap-2.5 group shrink-0 focus-visible:outline-2 focus-visible:outline-stone-900 rounded-md py-1"
+              className="flex items-center gap-2.5 shrink-0 rounded-md py-1 focus-visible:outline-2 focus-visible:outline-stone-900"
+              aria-label="SettleCart home"
             >
-              <span className="w-8 h-8 rounded-md bg-stone-900 text-stone-50 flex items-center justify-center font-semibold text-sm tracking-tight shadow-sm">
-                S
+              <span className="w-8 h-8 rounded-lg bg-stone-900 text-white flex items-center justify-center shadow-sm">
+                <i className="fa fa-shopping-bag text-sm" aria-hidden="true" />
               </span>
-              <span className="text-xl font-bold tracking-tight text-stone-900 font-sans">
+              <span className="text-xl font-bold tracking-tight text-stone-900">
                 SettleCart
               </span>
             </Link>
 
-            {/* Desktop & Laptop Navigation (Visible on lg: >= 1024px) */}
-            <nav
-              aria-label="Main Navigation"
-              className="hidden lg:flex items-center gap-5 xl:gap-7 text-sm font-medium text-stone-600"
-            >
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="hover:text-stone-950 transition-colors py-1.5 rounded-md focus-visible:outline-2 focus-visible:outline-stone-900"
-                >
+            <nav aria-label="Main Navigation" className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-medium text-stone-600">
+              {NAV_LINKS.map((link) => (
+                <a key={link.href} href={link.href} className="hover:text-stone-950 transition-colors py-1.5 rounded-md focus-visible:outline-2 focus-visible:outline-stone-900">
                   {link.label}
                 </a>
               ))}
             </nav>
 
-            {/* Action CTAs */}
-            <div className="flex items-center gap-3 sm:gap-4">
+            <div className="flex items-center gap-1.5 sm:gap-2.5">
               <a
-                href="#waitlist"
-                className="hidden sm:inline-flex items-center justify-center px-4 py-2.5 rounded-md text-xs sm:text-sm font-medium text-white bg-stone-900 hover:bg-stone-800 transition-colors shadow-sm min-h-[40px] focus-visible:outline-2 focus-visible:outline-stone-900"
+                href="/marketplace"
+                aria-label="Search products"
+                className="p-2.5 rounded-md text-stone-600 hover:text-stone-950 hover:bg-stone-100 min-h-[44px] min-w-[44px] hidden sm:flex items-center justify-center transition-colors"
               >
-                Join the Waitlist
+                <Search className="w-5 h-5" />
               </a>
-
-              {/* Mobile / Tablet Menu Trigger (< lg: < 1024px) */}
+              <Link
+                href="/login"
+                className="hidden md:inline-flex items-center justify-center px-3.5 py-2 rounded-md text-sm font-medium text-stone-700 hover:text-stone-950 hover:bg-stone-100 min-h-[40px] transition-colors"
+              >
+                Login
+              </Link>
+              <Link
+                href="/register"
+                className="hidden md:inline-flex items-center justify-center px-4 py-2.5 rounded-md text-sm font-medium text-white bg-stone-900 hover:bg-stone-800 min-h-[40px] shadow-sm transition-colors"
+              >
+                Sign Up
+              </Link>
+              <button
+                type="button"
+                onClick={() => setCartOpen(true)}
+                aria-label={count ? `Open cart, ${count} items` : "Open cart"}
+                className="relative p-2.5 rounded-md text-stone-700 hover:text-stone-950 hover:bg-stone-100 min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                <CartCountBadge />
+              </button>
               <button
                 type="button"
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="lg:hidden p-2.5 rounded-md text-stone-700 hover:text-stone-950 hover:bg-stone-100 min-h-[44px] min-w-[44px] flex items-center justify-center focus-visible:outline-2 focus-visible:outline-stone-900 transition-colors"
+                className="lg:hidden p-2.5 rounded-md text-stone-700 hover:text-stone-950 hover:bg-stone-100 min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors"
                 aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
                 aria-expanded={mobileOpen}
                 aria-controls="mobile-navigation-drawer"
@@ -95,85 +112,82 @@ export function Navbar() {
                 {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
-
           </div>
         </div>
       </header>
 
-      {/* Accessible Full Mobile & Tablet Navigation Drawer Overlay */}
       {mobileOpen && (
         <div
           id="mobile-navigation-drawer"
           role="dialog"
           aria-modal="true"
           aria-label="Site Navigation"
-          className="fixed inset-0 z-[100] bg-[#fafaf9] lg:hidden flex flex-col justify-between overflow-y-auto px-6 py-6 transition-all"
+          className="fixed inset-0 z-[100] bg-white lg:hidden flex flex-col overflow-y-auto px-6 py-6"
         >
-          {/* Top header row with Brand & Close Button */}
           <div className="flex items-center justify-between pb-5 border-b border-stone-200/80">
-            <Link
-              href="/"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-2.5"
-            >
-              <span className="w-8 h-8 rounded-md bg-stone-900 text-stone-50 flex items-center justify-center font-semibold text-sm tracking-tight shadow-sm">
-                S
+            <span className="flex items-center gap-2.5">
+              <span className="w-8 h-8 rounded-lg bg-stone-900 text-white flex items-center justify-center text-sm">
+                <i className="fa fa-shopping-bag" aria-hidden="true" />
               </span>
-              <span className="text-xl font-bold tracking-tight text-stone-900 font-sans">
-                SettleCart
-              </span>
-            </Link>
+              <span className="text-xl font-bold tracking-tight text-stone-900">SettleCart</span>
+            </span>
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
-              className="p-2.5 rounded-md text-stone-700 hover:text-stone-950 hover:bg-stone-200/60 min-h-[44px] min-w-[44px] flex items-center justify-center focus-visible:outline-2 focus-visible:outline-stone-900"
+              className="p-2.5 rounded-md text-stone-700 hover:bg-stone-100 min-h-[44px] min-w-[44px] flex items-center justify-center"
               aria-label="Close navigation menu"
             >
               <X className="w-6 h-6" />
             </button>
           </div>
 
-          {/* Nav Links Stack with large touch targets */}
-          <div className="py-6 space-y-1">
-            <div className="text-[11px] font-mono uppercase tracking-wider text-stone-400 mb-3 px-2">
-              Explore SettleCart
-            </div>
-            {navLinks.map((link) => (
+          <nav aria-label="Mobile" className="py-6 space-y-1">
+            {NAV_LINKS.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-between py-3.5 px-3 rounded-lg text-lg font-semibold text-stone-800 hover:text-stone-950 hover:bg-stone-200/50 transition-colors min-h-[48px]"
+                className="flex items-center justify-between py-3.5 px-3 rounded-lg text-lg font-semibold text-stone-800 hover:bg-stone-100 min-h-[48px] transition-colors"
               >
                 <span>{link.label}</span>
                 <ArrowRight className="w-4 h-4 text-stone-400" />
               </a>
             ))}
-          </div>
+          </nav>
 
-          {/* Drawer Footer Actions */}
-          <div className="pt-6 border-t border-stone-200/80 space-y-4">
-            <a
-              href="#waitlist"
-              onClick={() => setMobileOpen(false)}
-              className="w-full inline-flex items-center justify-center px-5 py-3.5 rounded-lg text-base font-semibold text-white bg-stone-900 hover:bg-stone-800 transition-colors shadow-sm min-h-[48px]"
-            >
-              Join the Waiting List
-            </a>
-
-            <div className="flex items-center justify-between text-xs text-stone-500 pt-2 px-1">
-              <span>African Commerce Infrastructure</span>
-              <button
-                type="button"
+          <div className="mt-auto pt-6 border-t border-stone-200/80 space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <Link
+                href="/login"
                 onClick={() => setMobileOpen(false)}
-                className="text-stone-600 hover:text-stone-900 font-medium py-1 px-2 rounded"
+                className="inline-flex items-center justify-center px-5 py-3 rounded-lg text-sm font-semibold border border-stone-300 text-stone-900 min-h-[48px]"
               >
-                Close Menu &times;
-              </button>
+                Login
+              </Link>
+              <Link
+                href="/register"
+                onClick={() => setMobileOpen(false)}
+                className="inline-flex items-center justify-center px-5 py-3 rounded-lg text-sm font-semibold text-white bg-stone-900 min-h-[48px]"
+              >
+                Sign Up
+              </Link>
             </div>
+            <button
+              type="button"
+              onClick={() => {
+                setMobileOpen(false);
+                setCartOpen(true);
+              }}
+              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg text-sm font-medium text-stone-700 bg-stone-100 min-h-[48px]"
+            >
+              <ShoppingCart className="w-4 h-4" />
+              View cart{count ? ` (${count})` : ""}
+            </button>
           </div>
         </div>
       )}
+
+      <CartDrawer />
     </>
   );
 }

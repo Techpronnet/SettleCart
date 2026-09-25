@@ -1,137 +1,129 @@
+import Link from "next/link";
+
+const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
+  {
+    title: "Marketplace",
+    links: [
+      { label: "Explore Products", href: "/marketplace" },
+      { label: "Stores", href: "/#stores" },
+      { label: "Categories", href: "/#categories" },
+      { label: "Deals", href: "/#deals" },
+    ],
+  },
+  {
+    title: "For Vendors",
+    links: [
+      { label: "Become a Vendor", href: "/register?as=vendor" },
+      { label: "Vendor Dashboard", href: "/register?as=vendor" },
+      { label: "Sell on SettleCart", href: "/#sell" },
+      { label: "Vendor Support", href: "/faq" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About", href: "/about" },
+      { label: "How It Works", href: "/how-it-works" },
+      { label: "Contact", href: "/waitlist" },
+      { label: "Help Center", href: "/faq" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy Policy", href: "#" },
+      { label: "Terms of Service", href: "#" },
+      { label: "Refund Policy", href: "#" },
+    ],
+  },
+];
+
+const SOCIALS = [
+  { icon: "fa-twitter", label: "SettleCart on X", href: "https://x.com" },
+  { icon: "fa-instagram", label: "SettleCart on Instagram", href: "https://instagram.com" },
+  { icon: "fa-linkedin", label: "SettleCart on LinkedIn", href: "https://linkedin.com" },
+  { icon: "fa-facebook", label: "SettleCart on Facebook", href: "https://facebook.com" },
+];
+
 export function Footer() {
   return (
-    <footer className="bg-[#fafaf9] border-t border-stone-200 py-12 sm:py-16 text-stone-600 text-sm">
-      <div className="site-container">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-8 sm:gap-10 pb-10 sm:pb-12 border-b border-stone-200/80">
-          
-          {/* Logo and Statement */}
-          <div className="sm:col-span-2 md:col-span-5 space-y-3">
-            <div className="flex items-center gap-2">
-              <span className="w-7 h-7 rounded bg-stone-900 text-stone-50 flex items-center justify-center font-semibold text-xs tracking-tight">
-                S
+    <footer className="bg-stone-950 text-stone-300">
+      <div className="site-container py-12 sm:py-16">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-8 sm:gap-10">
+          <div className="col-span-2 space-y-4">
+            <Link href="/" className="flex items-center gap-2.5" aria-label="SettleCart home">
+              <span className="w-8 h-8 rounded-lg bg-white text-stone-950 flex items-center justify-center">
+                <i className="fa fa-shopping-bag text-sm" aria-hidden="true" />
               </span>
-              <span className="text-lg font-bold tracking-tight text-stone-900 font-sans">
-                SettleCart
-              </span>
+              <span className="text-lg font-bold tracking-tight text-white">SettleCart</span>
+            </Link>
+            <p className="text-sm text-stone-400 leading-relaxed max-w-xs">
+              One marketplace where independent stores sell, customers shop, and
+              dispatch delivers to the doorstep.
+            </p>
+            <div className="flex items-center gap-2 pt-1">
+              {SOCIALS.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={s.label}
+                  className="w-9 h-9 rounded-md bg-white/10 text-stone-300 hover:bg-white/20 hover:text-white flex items-center justify-center min-h-[36px] min-w-[36px] transition-colors"
+                >
+                  <i className={`fa ${s.icon}`} aria-hidden="true" />
+                </a>
+              ))}
             </div>
-            <p className="text-stone-500 text-xs sm:text-sm max-w-sm leading-relaxed">
-              Connected digital storefronts, order orchestration, delivery network, and financial settlement for businesses across Africa.
-            </p>
-            <p className="text-xs text-stone-400 font-medium pt-2">
-              Built for the next generation of African commerce.
-            </p>
           </div>
 
-          {/* Navigation Links */}
-          <div className="md:col-span-3">
-            <h4 className="text-xs font-semibold text-stone-900 uppercase tracking-wider mb-3">
-              Platform
-            </h4>
-            <ul className="space-y-1 sm:space-y-2 text-xs text-stone-600">
-              <li>
-                <a href="#" className="inline-block py-1 sm:py-0.5 hover:text-stone-950 transition-colors">
-                  Home
-                </a>
-              </li>
-              <li>
-                <a href="#how-it-works" className="inline-block py-1 sm:py-0.5 hover:text-stone-950 transition-colors">
-                  How It Works
-                </a>
-              </li>
-              <li>
-                <a href="#for-businesses" className="inline-block py-1 sm:py-0.5 hover:text-stone-950 transition-colors">
-                  For Businesses
-                </a>
-              </li>
-              <li>
-                <a href="#for-customers" className="inline-block py-1 sm:py-0.5 hover:text-stone-950 transition-colors">
-                  For Customers
-                </a>
-              </li>
-              <li>
-                <a href="#delivery" className="inline-block py-1 sm:py-0.5 hover:text-stone-950 transition-colors">
-                  Delivery Network
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Resources & Contact */}
-          <div className="md:col-span-2">
-            <h4 className="text-xs font-semibold text-stone-900 uppercase tracking-wider mb-3">
-              Company
-            </h4>
-            <ul className="space-y-1 sm:space-y-2 text-xs text-stone-600">
-              <li>
-                <a href="#waitlist" className="inline-block py-1 sm:py-0.5 hover:text-stone-950 transition-colors">
-                  Contact
-                </a>
-              </li>
-              <li>
-                <a href="#trust" className="inline-block py-1 sm:py-0.5 hover:text-stone-950 transition-colors">
-                  Trust &amp; Security
-                </a>
-              </li>
-              <li>
-                <span className="inline-block py-1 sm:py-0.5 text-stone-400">Privacy</span>
-              </li>
-              <li>
-                <span className="inline-block py-1 sm:py-0.5 text-stone-400">Terms</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Social Placeholders */}
-          <div className="md:col-span-2">
-            <h4 className="text-xs font-semibold text-stone-900 uppercase tracking-wider mb-3">
-              Follow
-            </h4>
-            <ul className="space-y-1 sm:space-y-2 text-xs text-stone-600">
-              <li>
-                <a
-                  href="https://x.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-block py-1 sm:py-0.5 hover:text-stone-950 transition-colors"
-                >
-                  X (Twitter)
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-block py-1 sm:py-0.5 hover:text-stone-950 transition-colors"
-                >
-                  Instagram
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://linkedin.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-block py-1 sm:py-0.5 hover:text-stone-950 transition-colors"
-                >
-                  LinkedIn
-                </a>
-              </li>
-            </ul>
-          </div>
-
+          {COLUMNS.map((col) => (
+            <div key={col.title}>
+              <nav aria-label={`Footer: ${col.title}`} className="hidden sm:block">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-white mb-3">
+                  {col.title}
+                </h3>
+                <ul className="space-y-1 text-sm">
+                  {col.links.map((link) => (
+                    <li key={link.label}>
+                      <a
+                        href={link.href}
+                        className="inline-block py-1.5 text-stone-400 hover:text-white transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+              <details className="sm:hidden group border-b border-white/10 py-1">
+                <summary className="flex items-center justify-between py-3 text-xs font-semibold uppercase tracking-wider text-white cursor-pointer min-h-[44px] list-none [&::-webkit-details-marker]:hidden">
+                  {col.title}
+                  <i className="fa fa-chevron-down text-stone-500 text-xs group-open:rotate-180 transition-transform" aria-hidden="true" />
+                </summary>
+                <ul className="pb-3 space-y-1 text-sm">
+                  {col.links.map((link) => (
+                    <li key={link.label}>
+                      <a
+                        href={link.href}
+                        className="inline-block py-2 text-stone-400 hover:text-white transition-colors min-h-[40px]"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            </div>
+          ))}
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-400 gap-3 text-center sm:text-left">
-          <p>
-            &copy; {new Date().getFullYear()} SettleCart Technologies. All rights reserved.
-          </p>
-          <p>
-            Designed for everyday African commerce.
-          </p>
+        <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-stone-500">
+          <p>&copy; {new Date().getFullYear()} SettleCart. All rights reserved.</p>
+          <p>Secure checkout. Verified stores. Reliable delivery.</p>
         </div>
       </div>
     </footer>
   );
 }
+  

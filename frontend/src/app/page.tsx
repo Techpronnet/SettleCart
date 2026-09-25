@@ -1,33 +1,35 @@
 import { Navbar } from "@/components/Navbar";
-import { HeroSection } from "@/components/HeroSection";
-import { ProblemSection } from "@/components/ProblemSection";
-import { ConnectedCommerceLifecycle } from "@/components/ConnectedCommerceLifecycle";
-import { ForBusinessesSection } from "@/components/ForBusinessesSection";
-import { CustomerJourney } from "@/components/CustomerJourney";
-import { ConnectedDeliverySection } from "@/components/ConnectedDeliverySection";
-import { MultiBusinessSection } from "@/components/MultiBusinessSection";
-import { HowItWorksSection } from "@/components/HowItWorksSection";
-import { OperationsSection } from "@/components/OperationsSection";
-import { TrustSection } from "@/components/TrustSection";
-import { WaitlistSection } from "@/components/WaitlistSection";
 import { Footer } from "@/components/Footer";
+import { Hero } from "@/components/landing/Hero";
+import { Discovery } from "@/components/landing/Discovery";
+import { MultiStore } from "@/components/landing/MultiStore";
+import { Lifecycle } from "@/components/landing/Lifecycle";
+import { WhySettleCart } from "@/components/landing/WhySettleCart";
+import { FeaturedStores } from "@/components/landing/FeaturedStores";
+import { PopularProducts } from "@/components/landing/PopularProducts";
+import { HowItWorks } from "@/components/landing/HowItWorks";
+import { VendorCTA } from "@/components/landing/VendorCTA";
+import { Trust } from "@/components/landing/Trust";
+import { MobileExperience } from "@/components/landing/MobileExperience";
+import { FinalCTA } from "@/components/landing/FinalCTA";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col bg-[#fafaf9] text-stone-900 overflow-x-hidden selection:bg-stone-900 selection:text-white">
+    <div className="flex min-h-screen flex-col bg-white text-stone-900 overflow-x-hidden selection:bg-stone-900 selection:text-white">
       <Navbar />
       <main className="flex-1">
-        <HeroSection />
-        <ProblemSection />
-        <ConnectedCommerceLifecycle />
-        <HowItWorksSection />
-        <ForBusinessesSection />
-        <CustomerJourney />
-        <ConnectedDeliverySection />
-        <MultiBusinessSection />
-        <OperationsSection />
-        <TrustSection />
-        <WaitlistSection />
+        <Hero />
+        <Discovery />
+        <MultiStore />
+        <Lifecycle />
+        <WhySettleCart />
+        <FeaturedStores />
+        <PopularProducts />
+        <HowItWorks />
+        <VendorCTA />
+        <Trust />
+        <MobileExperience />
+        <FinalCTA />
       </main>
       <Footer />
     </div>

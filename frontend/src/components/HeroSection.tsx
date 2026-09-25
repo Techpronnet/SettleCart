@@ -9,6 +9,9 @@ import {
   CheckCircle2,
   Truck,
   Check,
+  Package,
+  Tag,
+  ShoppingBag,
 } from "lucide-react";
 
 export function HeroSection() {
@@ -155,8 +158,8 @@ export function HeroSection() {
                   <div className="mt-3 space-y-1.5">
                     <div className="flex items-center justify-between text-xs py-1 px-1.5 rounded hover:bg-stone-50 transition-colors">
                       <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded bg-stone-100 flex items-center justify-center text-[10px] text-stone-600 font-medium shrink-0">
-                          🍅
+                        <span className="w-6 h-6 rounded bg-stone-100 flex items-center justify-center text-stone-600 font-medium shrink-0">
+                          <Package className="w-3.5 h-3.5 text-stone-600" />
                         </span>
                         <span className="font-medium text-stone-800 text-[11px] sm:text-xs">Vine Tomatoes (1kg)</span>
                       </div>
@@ -165,8 +168,8 @@ export function HeroSection() {
 
                     <div className="flex items-center justify-between text-xs py-1 px-1.5 rounded hover:bg-stone-50 transition-colors">
                       <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded bg-stone-100 flex items-center justify-center text-[10px] text-stone-600 font-medium shrink-0">
-                          🫑
+                        <span className="w-6 h-6 rounded bg-stone-100 flex items-center justify-center text-stone-600 font-medium shrink-0">
+                          <Tag className="w-3.5 h-3.5 text-stone-600" />
                         </span>
                         <span className="font-medium text-stone-800 text-[11px] sm:text-xs">Sweet Peppers (Pack)</span>
                       </div>
@@ -175,8 +178,8 @@ export function HeroSection() {
 
                     <div className="flex items-center justify-between text-xs py-1 px-1.5 rounded hover:bg-stone-50 transition-colors">
                       <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded bg-stone-100 flex items-center justify-center text-[10px] text-stone-600 font-medium shrink-0">
-                          🍯
+                        <span className="w-6 h-6 rounded bg-stone-100 flex items-center justify-center text-stone-600 font-medium shrink-0">
+                          <ShoppingBag className="w-3.5 h-3.5 text-stone-600" />
                         </span>
                         <span className="font-medium text-stone-800 text-[11px] sm:text-xs">Forest Honey (500g)</span>
                       </div>

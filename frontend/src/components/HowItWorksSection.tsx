@@ -14,6 +14,8 @@ import {
   Search,
   Bike,
   ChevronRight,
+  Sparkles,
+  Tag,
 } from "lucide-react";
 
 export function HowItWorksSection() {
@@ -211,8 +213,8 @@ export function HowItWorksSection() {
                   <div className="mt-2.5 space-y-1.5 pt-2 border-t border-stone-100 text-xs">
                     <div className="flex items-center justify-between py-0.5 px-1 rounded hover:bg-stone-50 transition-colors">
                       <div className="flex items-center gap-2">
-                        <span className="w-5 h-5 rounded bg-amber-50 border border-amber-200/60 flex items-center justify-center text-[10px]">
-                          🧴
+                        <span className="w-5 h-5 rounded bg-amber-50 border border-amber-200/60 flex items-center justify-center">
+                          <Sparkles className="w-3 h-3 text-amber-700" />
                         </span>
                         <span className="text-[11px] font-medium text-stone-800">
                           Baobab Face Nectar
@@ -225,8 +227,8 @@ export function HowItWorksSection() {
 
                     <div className="flex items-center justify-between py-0.5 px-1 rounded hover:bg-stone-50 transition-colors">
                       <div className="flex items-center gap-2">
-                        <span className="w-5 h-5 rounded bg-rose-50 border border-rose-200/60 flex items-center justify-center text-[10px]">
-                          🌸
+                        <span className="w-5 h-5 rounded bg-rose-50 border border-rose-200/60 flex items-center justify-center">
+                          <Tag className="w-3 h-3 text-rose-700" />
                         </span>
                         <span className="text-[11px] font-medium text-stone-800">
                           Wild Hibiscus Toner
@@ -623,8 +625,8 @@ export function HowItWorksSection() {
                 <div className="bg-white p-2.5 rounded-lg border border-stone-200/80 shadow-2xs">
                   <div className="flex items-center justify-between pb-1.5 border-b border-stone-100">
                     <div className="flex items-center gap-1.5">
-                      <div className="w-6 h-6 rounded-full bg-stone-100 flex items-center justify-center text-xs">
-                        🚴
+                      <div className="w-6 h-6 rounded-full bg-stone-100 flex items-center justify-center">
+                        <Bike className="w-3.5 h-3.5 text-stone-700" />
                       </div>
                       <div>
                         <div className="text-[11px] font-bold text-stone-900 leading-tight">

@@ -64,3 +64,23 @@ frontend/waitlist_entries.json
 
 # Internal Documentation & Specifications
 Marketplace_Platform_SRS_v1.1.md
+
+# Agent Orchestration Logs & Reports
+.agents/
+PROJECT.md
+TEST_INFRA.md
+TEST_READY.md
+
+# Python & Backend Artifacts
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*/.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.venv/
+venv/
