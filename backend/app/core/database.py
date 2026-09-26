@@ -21,10 +21,30 @@ def normalize_database_url(raw_url: str) -> Tuple[str, Dict[str, Any]]:
     parsed = urlparse(url)
     if parsed.query:
         query_params = parse_qs(parsed.query)
-        if "sslmode" in query_params:
-            sslmode_val = query_params.pop("sslmode")[0]
-            if sslmode_val.lower() in ("require", "verify-ca", "verify-full"):
-                connect_args["ssl"] = True
+        
+        # Translate SSL settings for asyncpg
+        sslmode = query_params.pop("sslmode", None)
+        ssl_val = query_params.pop("ssl", None)
+        
+        if sslmode and sslmode[0].lower() in ("require", "verify-ca", "verify-full"):
+            connect_args["ssl"] = True
+        elif ssl_val and ssl_val[0].lower() in ("true", "require", "1"):
+            connect_args["ssl"] = True
+
+        # Strip libpq/psycopg-specific parameters unsupported by asyncpg
+        unsupported_params = {
+            "channel_binding",
+            "gssencmode",
+            "sslcompression",
+            "target_session_attrs",
+            "sslrootcert",
+            "sslcert",
+            "sslkey",
+            "sslpassword",
+        }
+        for param in unsupported_params:
+            query_params.pop(param, None)
+
         flat_query = {k: v[0] for k, v in query_params.items()}
         new_query = urlencode(flat_query)
         url = urlunparse((
@@ -35,6 +55,7 @@ def normalize_database_url(raw_url: str) -> Tuple[str, Dict[str, Any]]:
             new_query,
             parsed.fragment,
         ))
+
 
     return url, connect_args
 
