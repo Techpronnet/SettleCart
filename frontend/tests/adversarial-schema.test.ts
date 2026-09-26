@@ -38,13 +38,13 @@ type MissingPassword = { username: "rider@example.com" };
 type _TestMissingPasswordFails = Expect<Not<Extends<MissingPassword, LoginForm>>>;
 
 // Negative assertion: Missing username cannot satisfy LoginForm
-type MissingUsername = { password: "secretPassword" };
+type MissingUsername = { password: "mock-password" };
 type _TestMissingUsernameFails = Expect<Not<Extends<MissingUsername, LoginForm>>>;
 
 // D. Optional fields: grant_type, scope, client_id, client_secret
 type ValidFullOAuth2 = {
   username: "rider@settlecart.com";
-  password: "secure_password_123";
+  password: "mock-password";
   grant_type?: string | null;
   scope: string;
   client_id?: string | null;

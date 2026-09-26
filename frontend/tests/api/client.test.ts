@@ -161,7 +161,7 @@ describe('openapi-fetch Client & Middleware (F3)', () => {
       await client.POST('/api/v1/auth/login', {
         body: {
           username: 'user@example.com',
-          password: 'Password123',
+          password: 'mock-test-password',
           scope: '',
         },
         headers: {

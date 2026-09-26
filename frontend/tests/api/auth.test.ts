@@ -27,6 +27,9 @@ import {
 } from '../../src/lib/api/domains/auth';
 import { ApiError } from '../../src/lib/api/types';
 
+// Synthetic placeholder credentials for mock tests (gitguardian:ignore)
+const MOCK_TEST_PASSWORD = 'mock-test-password';
+
 describe('Auth Domain API (F4)', () => {
   const fetchServer = new MockFetchServer();
   const storageManager = new MockStorageManager();
@@ -51,7 +54,7 @@ describe('Auth Domain API (F4)', () => {
         const bodyStr = typeof req.body === 'string' ? req.body : String(req.body);
         const params = new URLSearchParams(bodyStr);
         assert.equal(params.get('username'), 'customer@settlecart.com');
-        assert.equal(params.get('password'), 'SecurePassword123!');
+        assert.equal(params.get('password'), MOCK_TEST_PASSWORD);
         assert.equal(params.get('grant_type'), 'password');
         assert.equal(params.get('scope'), '');
 
@@ -63,7 +66,7 @@ describe('Auth Domain API (F4)', () => {
 
       const result = await login({
         username: 'customer@settlecart.com',
-        password: 'SecurePassword123!',
+        password: MOCK_TEST_PASSWORD,
       });
 
       assert.equal(result.access_token, 'jwt-customer-access-token');
@@ -88,7 +91,7 @@ describe('Auth Domain API (F4)', () => {
         async () => {
           await login({
             username: 'wrong@example.com',
-            password: 'BadPassword',
+            password: 'mock-invalid-password',
           });
         },
         (err: unknown) => {
@@ -123,7 +126,7 @@ describe('Auth Domain API (F4)', () => {
 
       const response = await register({
         email: 'newuser@settlecart.com',
-        password: 'Password123!',
+        password: MOCK_TEST_PASSWORD,
         full_name: 'Chioma Eze',
         role: 'customer',
         phone: '+2348011112222',
@@ -147,7 +150,7 @@ describe('Auth Domain API (F4)', () => {
 
       const response = await register({
         email: 'rider@settlecart.com',
-        password: 'RiderPassword123!',
+        password: MOCK_TEST_PASSWORD,
         full_name: 'Babajide Sanwo',
         role: 'dispatch',
       });
@@ -170,7 +173,7 @@ describe('Auth Domain API (F4)', () => {
         async () => {
           await register({
             email: 'existing@settlecart.com',
-            password: 'ValidPassword123!',
+            password: MOCK_TEST_PASSWORD,
             full_name: 'Existing User',
             role: 'customer',
           });

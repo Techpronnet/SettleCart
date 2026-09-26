@@ -30,6 +30,10 @@ import assert from 'node:assert/strict';
 import { afterEach, beforeEach, describe, it } from 'node:test';
 
 import { authStorage } from '../../src/lib/api/auth-storage';
+
+// Synthetic placeholder credentials for mock tests (gitguardian:ignore)
+const MOCK_TEST_PASSWORD = 'mock-test-password';
+
 import {
   getCurrentUser,
   login,
@@ -91,7 +95,7 @@ describe('Real-World Application Scenarios (Tier 4 & Tier 3)', () => {
 
       const loginRes = await login({
         username: 'buyer@settlecart.com',
-        password: 'CustomerPassword123!',
+        password: MOCK_TEST_PASSWORD,
       });
       assert.equal(loginRes.access_token, 'customer-token-123');
       assert.equal(authStorage.getToken(), 'customer-token-123');
@@ -261,7 +265,7 @@ describe('Real-World Application Scenarios (Tier 4 & Tier 3)', () => {
 
       await login({
         username: 'rider.emeka@settlecart.com',
-        password: 'RiderSecret123!',
+        password: MOCK_TEST_PASSWORD,
       });
       assert.equal(authStorage.getToken(), 'rider-token-777');
 
