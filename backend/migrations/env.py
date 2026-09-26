@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
 from app.core.config import settings
+from app.core.database import normalize_database_url
 from app.models import Base
 
 # this is the Alembic Config object, which provides
@@ -23,8 +24,10 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 target_metadata = Base.metadata
 
-# Override the sqlalchemy.url from the config with the one from our settings
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+# Override the sqlalchemy.url from the config with the normalized one from our settings
+normalized_db_url, db_connect_args = normalize_database_url(settings.DATABASE_URL)
+config.set_main_option("sqlalchemy.url", normalized_db_url)
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
@@ -59,10 +62,16 @@ async def run_async_migrations() -> None:
     and associate a connection with the context.
     """
 
+    engine_kwargs = {
+        "prefix": "sqlalchemy.",
+        "poolclass": pool.NullPool,
+    }
+    if db_connect_args:
+        engine_kwargs["connect_args"] = db_connect_args
+
     connectable = async_engine_from_config(
         config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
+        **engine_kwargs,
     )
 
     async with connectable.connect() as connection:

@@ -190,9 +190,11 @@ async def test_full_dispatch_and_otp_verification_lifecycle(client: AsyncClient)
 async def test_max_verification_attempts_locks_delivery(client: AsyncClient):
     # Setup roles
     admin = await client.post("/api/v1/auth/register", json={
-        "email": "lock_admin@test.com", "password": "Password123!", "full_name": "Lock Admin", "role": "admin"
+        "email": "lock_admin@test.com", "password": "Password123!", "full_name": "Lock Admin", "role": "admin",
+        "admin_secret": "settlecart-admin-secret"
     })
     admin_headers = {"Authorization": f"Bearer {admin.json()['access_token']}"}
+
 
     vendor = await client.post("/api/v1/auth/register", json={
         "email": "lock_vendor@test.com", "password": "Password123!", "full_name": "Lock Vendor", "role": "vendor"
@@ -242,8 +244,13 @@ async def test_max_verification_attempts_locks_delivery(client: AsyncClient):
     assert fifth.status_code == 403
     assert "exhausted" in fifth.json()["error"]["message"]
 
-    # Subsequent attempt is locked
-    locked = await client.post(f"/api/v1/dispatch/tasks/{task_id}/verify-delivery", json={"code": "111111"}, headers=rider_headers)
+    # Subsequent attempt is locked (provide distinct IP header so IP rate limiter does not precede task lock check)
+    locked = await client.post(
+        f"/api/v1/dispatch/tasks/{task_id}/verify-delivery",
+        json={"code": "111111"},
+        headers={**rider_headers, "X-Forwarded-For": "10.254.254.254"}
+    )
     assert locked.status_code == 403
     assert "locked for administrative review" in locked.json()["error"]["message"]
+
 

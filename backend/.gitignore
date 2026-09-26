@@ -13,3 +13,5 @@ waitlist_entries.json
 celerybeat-schedule*
 *.sqlite
 *.db
+certbot/conf/
+certbot/www/

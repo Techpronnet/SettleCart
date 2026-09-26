@@ -205,6 +205,7 @@ async def websocket_order_tracking(
     user = await get_user_from_auth(ticket=ticket, token=token, db=db)
     if not user:
         # 4401: Unauthorized
+        await websocket.accept()
         await websocket.close(code=4401, reason="Authentication failed: invalid or expired ticket/token")
         return
 
@@ -214,8 +215,10 @@ async def websocket_order_tracking(
         initial_summary = await build_tracking_summary(order)
     except (NotFoundException, ForbiddenException) as exc:
         # 4403: Forbidden / Access Denied
+        await websocket.accept()
         await websocket.close(code=4403, reason=str(exc.detail))
         return
+
 
     # 3. Accept Connection
     await ws_manager.connect(order_id, websocket)
@@ -254,7 +257,12 @@ async def websocket_order_tracking(
         logger.info("Client disconnected from order %s tracking", order_id)
     finally:
         listener_task.cancel()
+        try:
+            await listener_task
+        except (asyncio.CancelledError, Exception):
+            pass
         ws_manager.disconnect(order_id, websocket)
+
 
 
 @router.get("/orders/{order_id}/live-tracking")
@@ -263,6 +271,7 @@ async def sse_order_tracking(
     order_id: UUID,
     ticket: Optional[str] = Query(None),
     token: Optional[str] = Query(None),
+    max_events: Optional[int] = Query(None),
     db: AsyncSession = Depends(get_db),
 ):
     """
@@ -291,6 +300,10 @@ async def sse_order_tracking(
             "data": initial_summary,
         }
         yield f"event: TRACKING_CONNECTED\ndata: {json.dumps(init_payload, default=str)}\n\n"
+        event_count = 1
+        if max_events is not None and event_count >= max_events:
+            return
+
 
         # Stream real-time events from Redis
         try:

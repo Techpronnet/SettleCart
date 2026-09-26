@@ -6,3 +6,5 @@ factory-boy>=3.3,<4.0
 aiosqlite>=0.20,<1.0
 ruff>=0.8,<1.0
 mypy>=1.13,<2.0
+bandit>=1.7,<2.0
+pip-audit>=2.7,<3.0

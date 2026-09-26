@@ -9,6 +9,16 @@ async def test_health_check(client: AsyncClient):
     assert data["status"] == "healthy"
 
 @pytest.mark.asyncio
+async def test_readiness_check(client: AsyncClient):
+    response = await client.get("/ready")
+    assert response.status_code in (200, 503)
+    data = response.json()
+    assert "status" in data
+    assert "database" in data
+    assert "redis" in data
+
+
+@pytest.mark.asyncio
 async def test_root(client: AsyncClient):
     response = await client.get("/")
     assert response.status_code == 200
