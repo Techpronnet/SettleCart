@@ -9,8 +9,13 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     SECRET_KEY: str = "change-me"
     API_V1_PREFIX: str = "/api/v1"
-    BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:3000"]
+    BACKEND_CORS_ORIGINS: list[str] = [
+        "http://localhost:3000",
+        "https://settle-cart.vercel.app",
+        "http://13.48.219.73",
+    ]
     ADMIN_REGISTRATION_SECRET: str = "settlecart-admin-secret"
+
     
     # Database
     DATABASE_URL: str = "postgresql+asyncpg://settlecart:settlecart@localhost:5432/settlecart"
