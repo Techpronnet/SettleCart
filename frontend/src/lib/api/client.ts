@@ -20,12 +20,39 @@ export const DEFAULT_API_URL = 'http://localhost:8000/api/v1';
  * The generated schema paths already include the `/api/v1` prefix, so the
  * base must NOT include it — otherwise requests are built with a doubled
  * `/api/v1/api/v1` prefix.
+ *
+ * When the frontend is served over HTTPS (e.g. on Vercel production), browsers
+ * strictly forbid cross-origin requests to insecure HTTP backends (Mixed Content).
+ * In that scenario, or when NEXT_PUBLIC_API_URL is unset/relative, an empty base
+ * URL is returned so calls route to same-origin `/api/v1/...` and are proxied
+ * securely via Next.js rewrites to the EC2 backend.
  */
 export function getBaseUrl(): string {
-  const envUrl = process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_URL;
-  return envUrl
-    .replace(/\/+$/, '')
-    .replace(/\/api\/v1$/, '');
+  const envUrl = (process.env.NEXT_PUBLIC_API_URL || '').trim();
+
+  // In the browser:
+  if (typeof window !== 'undefined') {
+    // If the frontend is loaded over HTTPS and the API URL is insecure HTTP,
+    // the browser blocks it as Mixed Content. Fall back to same-origin rewrite.
+    if (window.location.protocol === 'https:' && envUrl.startsWith('http://')) {
+      return '';
+    }
+    // If no explicit API URL is set, also route through Next.js rewrites proxy.
+    if (!envUrl) {
+      return '';
+    }
+    return envUrl.replace(/\/+$/, '').replace(/\/api\/v1$/, '');
+  }
+
+  // On the server (SSR / Node.js runtime):
+  // Global fetch in Node.js requires an absolute URL.
+  const serverUrl =
+    process.env.BACKEND_API_INTERNAL_URL ||
+    process.env.BACKEND_INTERNAL_URL ||
+    envUrl ||
+    DEFAULT_API_URL;
+
+  return serverUrl.replace(/\/+$/, '').replace(/\/api\/v1$/, '');
 }
 
 const PUBLIC_PATHS = [
@@ -54,7 +81,10 @@ async function executeTokenRefresh(baseUrl: string): Promise<string | null> {
         return null;
       }
 
-      const normalizedBase = baseUrl.replace(/\/+$/, '');
+      let normalizedBase = baseUrl.replace(/\/+$/, '');
+      if (typeof window !== 'undefined' && window.location.protocol === 'https:' && normalizedBase.startsWith('http://')) {
+        normalizedBase = '';
+      }
       const refreshUrl = normalizedBase.endsWith('/api/v1')
         ? `${normalizedBase}/auth/refresh`
         : `${normalizedBase}/api/v1/auth/refresh`;
@@ -114,14 +144,38 @@ const authMiddleware: Middleware = {
       }
     }
 
+    // Guard against Mixed Content: if the page is HTTPS but the request is HTTP,
+    // rewrite the URL to same-origin HTTPS so Next.js rewrites proxy it.
+    if (
+      typeof window !== 'undefined' &&
+      window.location.protocol === 'https:' &&
+      currentRequest.url.startsWith('http://')
+    ) {
+      try {
+        const parsed = new URL(currentRequest.url);
+        const secureUrl = `${window.location.origin}${parsed.pathname}${parsed.search}`;
+        const init: RequestInit = {
+          method: currentRequest.method,
+          headers: new Headers(currentRequest.headers),
+        };
+        if (bufferedBody) {
+          init.body = bufferedBody;
+          (init as Record<string, unknown>).duplex = 'half';
+        }
+        currentRequest = new Request(secureUrl, init);
+      } catch {
+        // Fallback: keep currentRequest
+      }
+    }
+
     // Deduplicate /api/v1 if baseUrl and schemaPath both included it.
     // Rebuild explicitly with the buffered bytes: re-wrapping via
     // `new Request(url, request)` drops the body in some browsers.
-    if (request.url.includes('/api/v1/api/v1')) {
-      const fixedUrl = request.url.replace('/api/v1/api/v1', '/api/v1');
+    if (currentRequest.url.includes('/api/v1/api/v1')) {
+      const fixedUrl = currentRequest.url.replace('/api/v1/api/v1', '/api/v1');
       const init: RequestInit = {
-        method: request.method,
-        headers: new Headers(request.headers),
+        method: currentRequest.method,
+        headers: new Headers(currentRequest.headers),
       };
       if (bufferedBody) {
         init.body = bufferedBody;

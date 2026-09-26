@@ -99,8 +99,11 @@ export function connectOrderWebSocket(
     if (isClosed) return;
 
     const base = getBaseUrl();
-    const wsProtocol = base.startsWith('https') ? 'wss' : 'ws';
-    const hostAndPath = base.replace(/^https?:\/\//, '').replace(/\/+$/, '');
+    const isHttps = typeof window !== 'undefined' ? window.location.protocol === 'https:' : base.startsWith('https');
+    const wsProtocol = isHttps ? 'wss' : 'ws';
+    const hostAndPath = base
+      ? base.replace(/^https?:\/\//, '').replace(/\/+$/, '')
+      : (typeof window !== 'undefined' ? window.location.host : 'localhost:8000');
 
     const wsUrl = hostAndPath.endsWith('/api/v1')
       ? `${wsProtocol}://${hostAndPath}/ws/orders/${orderId}?ticket=${encodeURIComponent(ticketString)}`

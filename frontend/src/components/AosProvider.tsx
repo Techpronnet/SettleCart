@@ -52,10 +52,14 @@ function OnlineStatus() {
       if (typeof navigator !== "undefined" && navigator.onLine) return true;
       try {
         const envBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-        const origin = envBase.replace(/\/+$/, "").replace(/\/api\/v1$/, "");
+        let origin = envBase.replace(/\/+$/, "").replace(/\/api\/v1$/, "");
+        if (typeof window !== "undefined" && window.location.protocol === "https:" && origin.startsWith("http://")) {
+          origin = "";
+        }
         const ctrl = new AbortController();
         timer = setTimeout(() => ctrl.abort(), 6000);
-        const res = await fetch(`${origin}/health`, {
+        const healthUrl = origin ? `${origin}/health` : "/health";
+        const res = await fetch(healthUrl, {
           method: "GET",
           cache: "no-store",
           signal: ctrl.signal,
