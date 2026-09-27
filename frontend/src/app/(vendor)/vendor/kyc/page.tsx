@@ -9,6 +9,7 @@ import { ListSkeleton } from "@/components/ui/Skeleton";
 import { ErrorState } from "@/components/ui/States";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { VendorSetupPrompt } from "@/components/vendor/VendorBits";
+import { KycDocumentUploader } from "@/components/vendor/KycDocuments";
 import {
   ApiError,
   friendlyApiMessage,
@@ -85,6 +86,17 @@ function KycBody() {
 
   return (
     <div className="space-y-4">
+      <Card title="Verification documents">
+        <KycDocumentUploader
+          businessId={biz.id}
+          initial={{
+            government_id: Boolean(biz.government_id_url),
+            cac_certificate: Boolean(biz.cac_document_url),
+          }}
+          onChange={() => {}}
+        />
+      </Card>
+
       <Card title="Verification status">
         <Badge tone={kycTone(biz.kyc_status)}>{kycLabel(biz.kyc_status)}</Badge>
         <p className="mt-2 text-sm text-stone-600 leading-relaxed">

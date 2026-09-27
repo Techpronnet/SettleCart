@@ -9,7 +9,8 @@
  * - Wallet (balance, ledger, withdrawals)
  */
 
-import { client } from '../client';
+import { client, getBaseUrl } from '../client';
+import { authStorage } from '../auth-storage';
 import {
   ApiError,
   type BusinessCreateRequest,
@@ -72,6 +73,55 @@ export async function submitKyc(businessId: string): Promise<BusinessResponse> {
   });
   if (!data) throw new ApiError(500, 'internal_error', 'KYC submission returned empty response');
   return data;
+}
+
+export type KycDocumentType = 'government_id' | 'cac_certificate';
+
+export interface KycUploadResult {
+  business_id: string;
+  document_type: string;
+  public_id: string;
+  secure_url: string;
+  message: string;
+}
+
+/**
+ * Uploads a KYC document (multipart) for a business. Uses native fetch with
+ * FormData so files stream correctly through the same-origin proxy.
+ */
+export async function uploadKycDocument(
+  businessId: string,
+  documentType: KycDocumentType,
+  file: File
+): Promise<KycUploadResult> {
+  const token = authStorage.getToken();
+  const form = new FormData();
+  form.append('document_type', documentType);
+  form.append('file', file);
+
+  let res: Response;
+  try {
+    res = await fetch(`${getBaseUrl()}/api/v1/media/upload/kyc/${businessId}`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: form,
+    });
+  } catch {
+    throw new ApiError(0, 'network_error', 'Could not reach the server. Check your connection and try again.');
+  }
+
+  if (!res.ok) {
+    let message = `Upload failed (${res.status}).`;
+    try {
+      const body = await res.json();
+      if (body?.error?.message) message = body.error.message;
+    } catch {
+      // keep default
+    }
+    throw new ApiError(res.status, res.status === 401 ? 'unauthorized' : 'upload_failed', message);
+  }
+
+  return (await res.json()) as KycUploadResult;
 }
 
 // Stores management

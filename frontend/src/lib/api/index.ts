@@ -184,6 +184,9 @@ export {
   getMyLedger,
   requestWithdrawal,
   listMyWithdrawals,
+  uploadKycDocument,
+  type KycDocumentType,
+  type KycUploadResult,
 } from './domains/vendor';
 
 // Realtime & Live Tracking Domain Module

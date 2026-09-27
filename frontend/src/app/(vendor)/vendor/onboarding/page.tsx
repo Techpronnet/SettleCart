@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { ListSkeleton } from "@/components/ui/Skeleton";
 import { RequireAuth } from "@/components/auth/RequireAuth";
+import { KycDocumentUploader, type KycDocState } from "@/components/vendor/KycDocuments";
 import {
   ApiError,
   createBusiness,
@@ -39,6 +40,7 @@ function Wizard() {
   const [checking, setChecking] = useState(true);
   const [businessId, setBusinessId] = useState<string | null>(null);
   const [storeId, setStoreId] = useState<string | null>(null);
+  const [kycDocs, setKycDocs] = useState<KycDocState>({ government_id: false, cac_certificate: false });
   const [published, setPublished] = useState(false);
   const [error, setError] = useState("");
   const [working, setWorking] = useState(false);
@@ -216,20 +218,28 @@ function Wizard() {
           </Card>
         )}
 
-        {step === 1 && (
+        {step === 1 && businessId && (
           <Card title="Identity verification (KYC)">
-            <p className="text-sm text-stone-600 leading-relaxed">
-              Submit your business for verification. Our team reviews KYC submissions; approval
+            <p className="mb-3 text-sm text-stone-600 leading-relaxed">
+              Upload your documents first. Our team reviews KYC submissions; approval
               unlocks publishing and withdrawals.
             </p>
+            <KycDocumentUploader
+              businessId={businessId}
+              initial={{ government_id: false, cac_certificate: false }}
+              onChange={setKycDocs}
+            />
             <div className="mt-4 flex flex-col sm:flex-row gap-2.5">
-              <Button onClick={submitBusinessKyc} loading={working} size="lg">
+              <Button onClick={submitBusinessKyc} loading={working} size="lg" disabled={!kycDocs.government_id}>
                 Submit for verification
               </Button>
               <Button variant="secondary" size="lg" onClick={() => setStep(2)}>
                 Skip for now
               </Button>
             </div>
+            {!kycDocs.government_id && (
+              <p className="mt-2 text-xs text-stone-500">Upload your government ID to enable submission.</p>
+            )}
           </Card>
         )}
 
