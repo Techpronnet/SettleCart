@@ -9,11 +9,6 @@ const BACKEND_URL =
 const cleanBackend = BACKEND_URL.replace(/\/+$/, "").replace(/\/api\/v1$/, "");
 
 const nextConfig: NextConfig = {
-  // The backend API routes end in trailing slashes (e.g. POST /api/v1/businesses/).
-  // Vercel strips trailing slashes by default (308), which bounces API calls
-  // through an absolute http:// backend URL: mixed-content-blocked on phones
-  // and stripped of auth headers. Keep slashes so /api/* proxies through once.
-  trailingSlash: true,
   async rewrites() {
     return [
       {

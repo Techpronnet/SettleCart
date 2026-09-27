@@ -34,6 +34,7 @@ async def check_store_ownership(db: AsyncSession, store_id: UUID, user: User) ->
     if business.owner_id != user.id:
         raise ForbiddenException("You do not own this store")
 
+@router.post("", response_model=OrderResponse, status_code=status.HTTP_201_CREATED)
 @router.post("/", response_model=OrderResponse, status_code=status.HTTP_201_CREATED)
 async def create_order(
     data: CreateOrderRequest,
@@ -42,6 +43,7 @@ async def create_order(
 ):
     return await OrderService.create_order(db, user.id, data)
 
+@router.get("", response_model=OrderListResponse)
 @router.get("/", response_model=OrderListResponse)
 async def list_orders(
     page: int = Query(1, ge=1),

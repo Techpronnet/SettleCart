@@ -13,6 +13,7 @@ from app.core.exceptions import ForbiddenException
 
 router = APIRouter()
 
+@router.post("", response_model=BusinessResponse, status_code=status.HTTP_201_CREATED)
 @router.post("/", response_model=BusinessResponse, status_code=status.HTTP_201_CREATED)
 async def create_business(
     data: BusinessCreateRequest,
@@ -24,6 +25,7 @@ async def create_business(
     await db.refresh(business)
     return business
 
+@router.get("", response_model=list[BusinessResponse])
 @router.get("/", response_model=list[BusinessResponse])
 async def list_own_businesses(
     db: AsyncSession = Depends(get_db),

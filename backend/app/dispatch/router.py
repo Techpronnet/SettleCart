@@ -217,6 +217,7 @@ async def report_delivery_failure(
         db, task_id=task_id, rider_id=current_user.id, reason=data.reason, notes=data.notes
     )
 
+@router.get("", response_model=DeliveryTaskListResponse)
 @router.get("/", response_model=DeliveryTaskListResponse)
 async def list_all_tasks(
     status: Optional[DeliveryTaskStatus] = None,

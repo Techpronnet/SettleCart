@@ -15,6 +15,7 @@ from app.notifications.service import NotificationService
 
 router = APIRouter()
 
+@router.get("", response_model=NotificationListResponse)
 @router.get("/", response_model=NotificationListResponse)
 async def list_notifications(
     is_read: Optional[bool] = Query(None, description="Filter by read or unread status"),

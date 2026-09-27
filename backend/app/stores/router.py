@@ -26,6 +26,7 @@ async def _verify_store_ownership(db: AsyncSession, store_id: UUID, user_id: UUI
         raise ForbiddenException("You don't own this store")
     return store
 
+@router.post("", response_model=StoreResponse, status_code=status.HTTP_201_CREATED)
 @router.post("/", response_model=StoreResponse, status_code=status.HTTP_201_CREATED)
 async def create_store(
     data: StoreCreateRequest,
