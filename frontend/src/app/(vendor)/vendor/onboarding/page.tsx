@@ -85,9 +85,19 @@ function Wizard() {
     try {
       return await fn();
     } catch (err) {
-      setError(
-        err instanceof ApiError ? friendlyApiMessage(err, "Something went wrong.") : "Network error. Try again."
-      );
+      if (process.env.NODE_ENV !== "production") {
+        console.error("[onboarding] failure:", err);
+      }
+      if (err instanceof ApiError) {
+        setError(friendlyApiMessage(err, "Something went wrong."));
+      } else if (err instanceof TypeError) {
+        setError(
+          "Can't reach the SettleCart server from this device. Check your internet connection, then try again. " +
+            "If you are on the live site and this keeps happening, the app may be pointing at an unreachable server address."
+        );
+      } else {
+        setError("Something went wrong. Try again.");
+      }
       return null;
     } finally {
       setWorking(false);
