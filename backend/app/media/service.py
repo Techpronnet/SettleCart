@@ -33,7 +33,7 @@ class MediaService:
     def is_configured() -> bool:
         if not (settings.CLOUDINARY_CLOUD_NAME and settings.CLOUDINARY_API_KEY and settings.CLOUDINARY_API_SECRET):
             return False
-        placeholders = {"your-cloud-name", "your-api-key", "your-api-secret", "placeholder", "mock"}
+        placeholders = {"your-cloud-name", "your-api-key", "your-api-secret", "placeholder", "mock", "change_me", "changeme", "test"}
         for val in (settings.CLOUDINARY_CLOUD_NAME, settings.CLOUDINARY_API_KEY, settings.CLOUDINARY_API_SECRET):
             if any(p in val.lower() for p in placeholders):
                 return False
