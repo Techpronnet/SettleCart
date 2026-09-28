@@ -51,3 +51,10 @@ class StoreListResponse(BaseModel):
     total: int
     page: int
     size: int
+
+from app.catalogue.schemas import ProductResponse
+
+class ShowcaseResponse(BaseModel):
+    stores: list[StoreResponse]
+    products: list[ProductResponse]
+

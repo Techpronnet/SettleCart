@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, status, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 from typing import Optional
 from app.core.dependencies import get_db, get_current_user, get_optional_user, require_role
 from app.stores.schemas import (
     StoreCreateRequest, StoreUpdateRequest, 
-    StoreResponse, StoreListResponse
+    StoreResponse, StoreListResponse, ShowcaseResponse
 )
 from app.stores.service import StoreService
 from app.models.user import User
@@ -38,24 +38,36 @@ async def create_store(
     await db.refresh(store)
     return store
 
+@router.get("/showcase", response_model=ShowcaseResponse)
+async def get_showcase(
+    response: Response,
+    db: AsyncSession = Depends(get_db)
+):
+    response.headers["Cache-Control"] = "public, max-age=60, s-maxage=300, stale-while-revalidate=600"
+    return await StoreService.get_showcase(db)
+
 @router.get("/public", response_model=StoreListResponse)
 async def list_published_stores(
+    response: Response,
     page: int = Query(1, ge=1),
     size: int = Query(20, ge=1, le=100),
     city: Optional[str] = None,
     db: AsyncSession = Depends(get_db)
 ):
+    response.headers["Cache-Control"] = "public, max-age=60, s-maxage=180, stale-while-revalidate=300"
     stores, total = await StoreService.list_published(db, page, size, city)
     return StoreListResponse(stores=stores, total=total, page=page, size=size)
 
 @router.get("/{store_id}", response_model=StoreResponse)
 async def get_store(
     store_id: UUID,
+    response: Response,
     db: AsyncSession = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_user)
 ):
     store = await StoreService.get_by_id(db, store_id)
     if store.is_published:
+        response.headers["Cache-Control"] = "public, max-age=60, s-maxage=180, stale-while-revalidate=300"
         return store
         
     if not current_user:
@@ -70,11 +82,13 @@ async def get_store(
 @router.get("/slug/{slug}", response_model=StoreResponse)
 async def get_store_by_slug(
     slug: str,
+    response: Response,
     db: AsyncSession = Depends(get_db)
 ):
     store = await StoreService.get_by_slug(db, slug)
     if not store.is_published:
         raise NotFoundException("Store not found")
+    response.headers["Cache-Control"] = "public, max-age=60, s-maxage=180, stale-while-revalidate=300"
     return store
 
 @router.patch("/{store_id}", response_model=StoreResponse)

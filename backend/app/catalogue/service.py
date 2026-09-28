@@ -8,6 +8,7 @@ from typing import Tuple, List, Optional
 from app.models.catalogue import Category, Product
 from app.catalogue.schemas import CategoryCreateRequest, CategoryUpdateRequest, ProductCreateRequest, ProductUpdateRequest
 from app.core.exceptions import NotFoundException, BadRequestException
+from app.core.cache import CacheService
 
 def slugify(text: str) -> str:
     text = text.lower()
@@ -92,6 +93,9 @@ class CatalogueService:
         db.add(product)
         await db.commit()
         await db.refresh(product)
+        await CacheService.invalidate("showcase")
+        await CacheService.invalidate("stores")
+        await CacheService.invalidate("catalogue")
         return product
 
     @staticmethod
@@ -139,12 +143,18 @@ class CatalogueService:
             
         await db.commit()
         await db.refresh(product)
+        await CacheService.invalidate("showcase")
+        await CacheService.invalidate("stores")
+        await CacheService.invalidate("catalogue")
         return product
 
     @staticmethod
     async def delete_product(db: AsyncSession, product: Product) -> None:
         product.is_active = False
         await db.commit()
+        await CacheService.invalidate("showcase")
+        await CacheService.invalidate("stores")
+        await CacheService.invalidate("catalogue")
 
     @staticmethod
     async def search_products(db: AsyncSession, query: str, page: int, size: int) -> Tuple[List[Product], int]:

@@ -182,6 +182,24 @@ export async function getProduct(productId: string): Promise<ProductResponse> {
   return data;
 }
 
+export interface ShowcaseResponse {
+  stores: StoreResponse[];
+  products: ProductResponse[];
+}
+
+/**
+ * Retrieves the aggregated showcase of top stores and trending products in 1 single request.
+ */
+export async function getShowcase(): Promise<ShowcaseResponse> {
+  const { data } = await (client.GET as any)('/api/v1/stores/showcase', {});
+
+  if (!data) {
+    throw new ApiError(500, 'internal_error', 'Failed to retrieve showcase');
+  }
+
+  return data as ShowcaseResponse;
+}
+
 export const storefront = {
   getPublicStores,
   getStore,
@@ -190,6 +208,7 @@ export const storefront = {
   getStoreProducts,
   searchProducts,
   getProduct,
+  getShowcase,
 };
 
 export default storefront;

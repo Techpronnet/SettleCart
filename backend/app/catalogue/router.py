@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, status, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from uuid import UUID
@@ -45,7 +45,8 @@ async def create_category(
     return await CatalogueService.create_category(db, store_id, data)
 
 @router.get("/stores/{store_id}/categories", response_model=List[CategoryResponse])
-async def list_categories(store_id: UUID, db: AsyncSession = Depends(get_db)):
+async def list_categories(store_id: UUID, response: Response, db: AsyncSession = Depends(get_db)):
+    response.headers["Cache-Control"] = "public, max-age=120, s-maxage=300, stale-while-revalidate=600"
     return await CatalogueService.list_categories(db, store_id)
 
 @router.patch("/categories/{category_id}", response_model=CategoryResponse)
@@ -82,27 +83,32 @@ async def create_product(
 @router.get("/stores/{store_id}/products", response_model=ProductListResponse)
 async def list_products(
     store_id: UUID,
+    response: Response,
     category_id: Optional[UUID] = None,
     search: Optional[str] = None,
     page: int = Query(1, ge=1),
     size: int = Query(20, ge=1, le=100),
     db: AsyncSession = Depends(get_db)
 ):
+    response.headers["Cache-Control"] = "public, max-age=60, s-maxage=180, stale-while-revalidate=300"
     products, total = await CatalogueService.list_products(db, store_id, page, size, category_id, search)
     return ProductListResponse(products=products, total=total, page=page, size=size)
 
 @router.get("/products/search", response_model=ProductListResponse)
 async def search_products(
     query: str,
+    response: Response,
     page: int = Query(1, ge=1),
     size: int = Query(20, ge=1, le=100),
     db: AsyncSession = Depends(get_db)
 ):
+    response.headers["Cache-Control"] = "public, max-age=30, s-maxage=60, stale-while-revalidate=120"
     products, total = await CatalogueService.search_products(db, query, page, size)
     return ProductListResponse(products=products, total=total, page=page, size=size)
 
 @router.get("/products/{product_id}", response_model=ProductResponse)
-async def get_product(product_id: UUID, db: AsyncSession = Depends(get_db)):
+async def get_product(product_id: UUID, response: Response, db: AsyncSession = Depends(get_db)):
+    response.headers["Cache-Control"] = "public, max-age=60, s-maxage=180, stale-while-revalidate=300"
     return await CatalogueService.get_product(db, product_id)
 
 @router.patch("/products/{product_id}", response_model=ProductResponse)

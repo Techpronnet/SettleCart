@@ -3,10 +3,13 @@ from sqlalchemy import select, func
 from uuid import UUID
 import re
 import secrets
+from typing import Any
 from app.models.store import Store
 from app.models.business import Business
 from app.stores.schemas import StoreCreateRequest, StoreUpdateRequest
 from app.core.exceptions import NotFoundException, ForbiddenException
+from app.core.cache import CacheService
+
 
 class StoreService:
     @staticmethod
@@ -78,22 +81,85 @@ class StoreService:
             store.slug = StoreService._generate_slug(update_data["name"])
             
         await db.flush()
+        await CacheService.invalidate("stores")
+        await CacheService.invalidate("showcase")
         return store
 
     @staticmethod
     async def publish(db: AsyncSession, store: Store) -> Store:
         store.is_published = True
         await db.flush()
+        await CacheService.invalidate("stores")
+        await CacheService.invalidate("showcase")
         return store
 
     @staticmethod
     async def unpublish(db: AsyncSession, store: Store) -> Store:
         store.is_published = False
         await db.flush()
+        await CacheService.invalidate("stores")
+        await CacheService.invalidate("showcase")
         return store
 
     @staticmethod
+    async def get_showcase(db: AsyncSession) -> dict[str, Any]:
+        """
+        Retrieves top published stores and active products in one fast query,
+        cached in Redis with 5-minute TTL.
+        """
+        cache_key = "showcase:default"
+        cached = await CacheService.get(cache_key)
+        if cached:
+            return cached
+
+        stores_stmt = (
+            select(Store)
+            .where(Store.is_published == True, Store.is_active == True)
+            .order_by(Store.created_at.desc())
+            .limit(6)
+        )
+        stores_res = await db.execute(stores_stmt)
+        stores = list(stores_res.scalars().all())
+
+        if not stores:
+            return {"stores": [], "products": []}
+
+        store_ids = [s.id for s in stores]
+
+        from app.models.product import Product
+        products_stmt = (
+            select(Product)
+            .where(
+                Product.store_id.in_(store_ids),
+                Product.is_active == True,
+                Product.is_published == True
+            )
+            .order_by(Product.created_at.desc())
+            .limit(16)
+        )
+        products_res = await db.execute(products_stmt)
+        products = list(products_res.scalars().all())
+
+        from app.stores.schemas import StoreResponse
+        from app.catalogue.schemas import ProductResponse
+
+        result = {
+            "stores": [StoreResponse.model_validate(s).model_dump(mode="json") for s in stores],
+            "products": [ProductResponse.model_validate(p).model_dump(mode="json") for p in products],
+        }
+
+        await CacheService.set(cache_key, result, ttl_seconds=300)
+        return result
+
+    @staticmethod
     async def list_published(db: AsyncSession, page: int, size: int, city: str | None = None) -> tuple[list[Store], int]:
+        cache_key = f"stores:published:{page}:{size}:{city or 'all'}"
+        cached = await CacheService.get(cache_key)
+        if cached:
+            from app.stores.schemas import StoreResponse
+            stores = [StoreResponse(**s) for s in cached["stores"]]
+            return stores, cached["total"]
+
         query = select(Store).where(Store.is_published == True, Store.is_active == True)
         if city:
             query = query.where(Store.city.ilike(f"%{city}%"))
@@ -106,7 +172,14 @@ class StoreService:
         stmt = query.offset(offset).limit(size)
         result = await db.execute(stmt)
         stores = list(result.scalars().all())
-        
+
+        from app.stores.schemas import StoreResponse
+        payload = {
+            "stores": [StoreResponse.model_validate(s).model_dump(mode="json") for s in stores],
+            "total": total,
+        }
+        await CacheService.set(cache_key, payload, ttl_seconds=180)
+
         return stores, total
 
     @staticmethod

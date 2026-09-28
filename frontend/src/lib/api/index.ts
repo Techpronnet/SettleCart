@@ -128,6 +128,8 @@ export {
   getStoreProducts,
   searchProducts,
   getProduct,
+  getShowcase,
+  type ShowcaseResponse,
   type PublicStoresParams,
   type StoreProductsParams,
   type SearchProductsParams,
@@ -233,7 +235,8 @@ export {
   type AdminStoreListResponse,
 } from './domains/admin';
 import { authStorage } from './auth-storage';
-import { api, client } from './client';
+import { api, client, clearApiCache } from './client';
+export { clearApiCache };
 import { auth } from './domains/auth';
 import { dispatch } from './domains/dispatch';
 import { orders } from './domains/orders';

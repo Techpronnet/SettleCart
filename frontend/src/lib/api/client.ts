@@ -34,14 +34,11 @@ export function getBaseUrl(): string {
   if (typeof window !== 'undefined') {
     // If the frontend is loaded over HTTPS and the API URL is insecure HTTP,
     // the browser blocks it as Mixed Content. Fall back to same-origin rewrite.
-    if (window.location.protocol === 'https:' && envUrl.startsWith('http://')) {
+    if (window.location.protocol === 'https:' && (!envUrl || envUrl.startsWith('http://'))) {
       return '';
     }
-    // If no explicit API URL is set, also route through Next.js rewrites proxy.
-    if (!envUrl) {
-      return '';
-    }
-    return envUrl.replace(/\/+$/, '').replace(/\/api\/v1$/, '');
+    const resolved = envUrl || DEFAULT_API_URL;
+    return resolved.replace(/\/+$/, '').replace(/\/api\/v1$/, '');
   }
 
   // On the server (SSR / Node.js runtime):
@@ -275,6 +272,120 @@ const authMiddleware: Middleware = {
   },
 };
 
+interface ClientCacheEntry {
+  data: string;
+  status: number;
+  statusText: string;
+  headers: Record<string, string>;
+  expiresAt: number;
+}
+
+const clientApiCache = new Map<string, ClientCacheEntry>();
+
+// Default 60-second in-memory TTL for public storefront queries
+const DEFAULT_CACHE_TTL_MS = 60_000;
+
+function isCacheableEndpoint(url: string, schemaPath?: string): boolean {
+  const path = schemaPath || url;
+  return (
+    path.includes('/api/v1/stores/') ||
+    path.includes('/api/v1/catalogue/') ||
+    path.includes('/api/v1/stores/public') ||
+    path.includes('/api/v1/stores/showcase')
+  );
+}
+
+/**
+ * Manually flushes the client-side API memory cache.
+ */
+export function clearApiCache(): void {
+  clientApiCache.clear();
+}
+
+function isClientCacheEnabled(): boolean {
+  if (typeof process !== 'undefined') {
+    if (
+      process.env.NODE_ENV === 'test' ||
+      (Array.isArray(process.argv) && process.argv.some((arg) => arg.includes('test'))) ||
+      (Array.isArray(process.execArgv) && process.execArgv.some((arg) => arg.includes('test')))
+    ) {
+      return false;
+    }
+  }
+  return typeof window !== 'undefined';
+}
+
+const cacheMiddleware: Middleware = {
+  async onRequest({ request, schemaPath }) {
+    if (request.method !== 'GET' || !isClientCacheEnabled()) {
+      return;
+    }
+    // Only cache public storefront and catalogue routes
+    if (!isCacheableEndpoint(request.url, schemaPath)) {
+      return;
+    }
+
+    const cacheKey = request.url;
+    const entry = clientApiCache.get(cacheKey);
+    if (entry && Date.now() < entry.expiresAt) {
+      return new Response(entry.data, {
+        status: entry.status,
+        statusText: entry.statusText,
+        headers: new Headers(entry.headers),
+      });
+    }
+  },
+
+  async onResponse({ request, response, schemaPath }) {
+    if (!isClientCacheEnabled()) {
+      return response;
+    }
+
+    if (request.method !== 'GET') {
+      // Invalidate on mutations to stores or catalogue
+      if (
+        request.method === 'POST' ||
+        request.method === 'PUT' ||
+        request.method === 'PATCH' ||
+        request.method === 'DELETE'
+      ) {
+        if (isCacheableEndpoint(request.url, schemaPath)) {
+          clearApiCache();
+        }
+      }
+      return response;
+    }
+
+    if (!response.ok) {
+      return response;
+    }
+
+    if (isCacheableEndpoint(request.url, schemaPath)) {
+      try {
+        const cloned = response.clone();
+        const text = await cloned.text();
+        const headersObj: Record<string, string> = {};
+        response.headers.forEach((val, key) => {
+          headersObj[key] = val;
+        });
+        headersObj['x-settlecart-cache'] = 'HIT';
+
+        clientApiCache.set(request.url, {
+          data: text,
+          status: response.status,
+          statusText: response.statusText,
+          headers: headersObj,
+          expiresAt: Date.now() + DEFAULT_CACHE_TTL_MS,
+        });
+      } catch {
+        // Fallback: don't cache
+      }
+    }
+
+    return response;
+  },
+};
+
 /**
  * The typed openapi-fetch client instance.
  */
@@ -282,6 +393,7 @@ export const client = createFetchClient<paths>({
   baseUrl: getBaseUrl(),
 });
 
+client.use(cacheMiddleware);
 client.use(authMiddleware);
 
 /**
