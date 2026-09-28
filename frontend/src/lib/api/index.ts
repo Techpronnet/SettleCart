@@ -185,6 +185,7 @@ export {
   requestWithdrawal,
   listMyWithdrawals,
   uploadKycDocument,
+  uploadProductImage,
   type KycDocumentType,
   type KycUploadResult,
 } from './domains/vendor';

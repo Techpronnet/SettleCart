@@ -222,6 +222,40 @@ export async function deleteProduct(productId: string): Promise<void> {
   });
 }
 
+/**
+ * Uploads one product photo (multipart) and appends it to the product gallery.
+ * Returns the updated product.
+ */
+export async function uploadProductImage(productId: string, file: File): Promise<ProductResponse> {
+  const token = authStorage.getToken();
+  const form = new FormData();
+  form.append('file', file);
+
+  let res: Response;
+  try {
+    res = await fetch(`${getBaseUrl()}/api/v1/media/upload/product/${productId}/image`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: form,
+    });
+  } catch {
+    throw new ApiError(0, 'network_error', 'Could not reach the server. Check your connection and try again.');
+  }
+
+  if (!res.ok) {
+    let message = `Photo upload failed (${res.status}).`;
+    try {
+      const body = await res.json();
+      if (body?.error?.message) message = body.error.message;
+    } catch {
+      // keep default
+    }
+    throw new ApiError(res.status, res.status === 401 ? 'unauthorized' : 'upload_failed', message);
+  }
+
+  return (await res.json()) as ProductResponse;
+}
+
 // Vendor orders
 
 export async function listVendorOrders(
@@ -294,6 +328,7 @@ export const vendor = {
   createProduct,
   updateProduct,
   deleteProduct,
+  uploadProductImage,
   listVendorOrders,
   updateVendorOrderStatus,
   getMyWallet,

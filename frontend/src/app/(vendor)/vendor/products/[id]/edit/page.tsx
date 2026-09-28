@@ -36,8 +36,7 @@ function EditProductBody({ productId }: { productId: string }) {
   }, [productId]);
 
   async function handleSubmit(payload: ProductCreateRequest & ProductUpdateRequest) {
-    await updateProduct(productId, payload);
-    router.push("/vendor/products");
+    return updateProduct(productId, payload);
   }
 
   if (error) {
@@ -50,8 +49,11 @@ function EditProductBody({ productId }: { productId: string }) {
     <ProductForm
       storeId={product.store_id}
       initial={productFormFromResponse(product)}
+      initialImages={product.images ?? []}
+      productId={product.id}
       submitLabel="Save changes"
       onSubmit={handleSubmit}
+      onDone={() => router.push("/vendor/products")}
     />
   );
 }

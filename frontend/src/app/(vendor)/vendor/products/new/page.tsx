@@ -12,12 +12,19 @@ function NewProductBody({ storeId }: { storeId: string }) {
   const router = useRouter();
 
   async function handleSubmit(payload: ProductCreateRequest & ProductUpdateRequest) {
-    await createProduct(storeId, payload);
-    router.push("/vendor/products");
+    return createProduct(storeId, payload);
   }
 
   return (
-    <ProductForm storeId={storeId} initial={emptyProductForm()} submitLabel="Create product" onSubmit={handleSubmit} />
+    <ProductForm
+      storeId={storeId}
+      initial={emptyProductForm()}
+      initialImages={[]}
+      productId={null}
+      submitLabel="Create product"
+      onSubmit={handleSubmit}
+      onDone={() => router.push("/vendor/products")}
+    />
   );
 }
 

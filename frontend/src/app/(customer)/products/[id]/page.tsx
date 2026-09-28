@@ -16,6 +16,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const [product, setProduct] = useState<ProductResponse | null>(null);
   const [store, setStore] = useState<StoreResponse | null>(null);
   const [qty, setQty] = useState(1);
+  const [activeImage, setActiveImage] = useState<string | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -24,6 +25,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
       .then((p) => {
         if (cancelled) return;
         setProduct(p);
+        setActiveImage(p.images?.[0] ?? null);
         getStore(p.store_id)
           .then((s) => {
             if (!cancelled) setStore(s);
@@ -60,6 +62,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
   const inStock =
     product.is_active && (!product.track_inventory || product.inventory_count > 0);
+  const images = product.images ?? [];
 
   return (
     <div>
@@ -73,14 +76,36 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
       />
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-2xl border border-stone-200 bg-stone-100 overflow-hidden min-h-[280px]">
-          {product.images?.[0] ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover" />
-          ) : (
-            <span className="h-full min-h-[280px] w-full flex items-center justify-center text-stone-300">
-              <i className="fa fa-cube text-6xl" aria-hidden="true" />
-            </span>
+        <div>
+          <div className="rounded-2xl border border-stone-200 bg-stone-100 overflow-hidden min-h-[280px]">
+            {activeImage ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={activeImage} alt={product.name} className="h-full w-full object-cover" />
+            ) : (
+              <span className="h-full min-h-[280px] w-full flex items-center justify-center text-stone-300">
+                <i className="fa fa-cube text-6xl" aria-hidden="true" />
+              </span>
+            )}
+          </div>
+          {images.length > 1 && (
+            <div className="mt-2.5 grid grid-cols-5 gap-2" role="tablist" aria-label="Product photos">
+              {images.map((src, i) => (
+                <button
+                  key={src + i}
+                  type="button"
+                  role="tab"
+                  aria-selected={src === activeImage}
+                  aria-label={`View photo ${i + 1}`}
+                  onClick={() => setActiveImage(src)}
+                  className={`rounded-lg overflow-hidden border-2 aspect-square bg-stone-100 min-h-[48px] ${
+                    src === activeImage ? "border-stone-900" : "border-transparent"
+                  }`}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
+                </button>
+              ))}
+            </div>
           )}
         </div>
 
