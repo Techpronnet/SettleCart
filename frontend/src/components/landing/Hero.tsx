@@ -1,9 +1,81 @@
+"use client";
+
 import Link from "next/link";
-import { ArrowRight, Truck, Star } from "lucide-react";
-import { HERO_PRODUCTS } from "./data";
+import { ArrowRight, Truck } from "lucide-react";
 import { HeroProductCard } from "./cards";
+import { useLiveMarketplace } from "./useLiveMarketplace";
+import type { LandingProduct } from "./data";
+
+function PulseTile({ className = "" }: { className?: string }) {
+  return (
+    <div aria-hidden="true" className={`rounded-2xl border border-stone-200/80 bg-white/60 p-3 ${className}`}>
+      <div className="h-28 rounded-xl bg-stone-200/80 animate-pulse" />
+      <div className="mt-2 h-3 w-3/4 rounded bg-stone-200/80 animate-pulse" />
+      <div className="mt-1.5 h-3 w-1/2 rounded bg-stone-200/80 animate-pulse" />
+    </div>
+  );
+}
+
+function Collage({ items }: { items: LandingProduct[] }) {
+  const pick = (i: number): LandingProduct | null => items[i] ?? null;
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+      <div className="space-y-3 sm:space-y-4 pt-6">
+        {pick(0) ? (
+          <HeroProductCard product={pick(0) as LandingProduct} delay={0} />
+        ) : (
+          <SellHereTile />
+        )}
+        {pick(3) ? (
+          <HeroProductCard product={pick(3) as LandingProduct} delay={200} className="[animation-delay:1.2s]" />
+        ) : (
+          <SellHereTile />
+        )}
+      </div>
+      <div className="space-y-3 sm:space-y-4">
+        {pick(1) ? (
+          <HeroProductCard product={pick(1) as LandingProduct} delay={100} className="[animation-delay:0.6s]" />
+        ) : (
+          <SellHereTile />
+        )}
+        {pick(4) ? (
+          <HeroProductCard product={pick(4) as LandingProduct} delay={300} className="[animation-delay:1.8s]" />
+        ) : (
+          <SellHereTile />
+        )}
+      </div>
+      <div className="hidden sm:block space-y-3 sm:space-y-4 pt-12">
+        {pick(2) ? (
+          <HeroProductCard product={pick(2) as LandingProduct} delay={150} className="[animation-delay:2.4s]" />
+        ) : (
+          <SellHereTile />
+        )}
+        <div data-aos="fade-up" data-aos-delay="350" className="rounded-2xl bg-stone-950 text-white p-4 shadow-lg">
+          <p className="text-xs text-stone-300">One cart, many stores</p>
+          <p className="mt-1 text-[11px] text-stone-400">Single checkout. Tracked delivery.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SellHereTile() {
+  return (
+    <Link
+      href="/register?as=vendor"
+      className="flex flex-col items-center justify-center gap-1.5 rounded-2xl border border-dashed border-stone-300 bg-white/70 p-3 text-center min-h-[132px] hover:border-stone-900 transition-colors"
+    >
+      <span className="w-8 h-8 rounded-lg bg-stone-900 text-white flex items-center justify-center">
+        <i className="fa fa-plus text-xs" aria-hidden="true" />
+      </span>
+      <span className="text-xs font-semibold text-stone-900">Sell here</span>
+      <span className="text-[11px] text-stone-500">Open your store</span>
+    </Link>
+  );
+}
 
 export function Hero() {
+  const { products } = useLiveMarketplace();
   return (
     <section aria-labelledby="hero-heading" className="relative overflow-hidden bg-white">
       <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_0%,rgba(13,148,136,0.08),transparent)]" />
@@ -32,38 +104,30 @@ export function Hero() {
               Become a Vendor
             </Link>
           </div>
-          <dl className="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm">
-            <div className="flex items-center gap-2">
-              <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-              <dt className="sr-only">Ratings</dt>
-              <dd className="text-stone-600"><span className="font-semibold text-stone-900">4.8</span> avg. product rating</dd>
-            </div>
-            <div className="flex items-center gap-2">
-              <Truck className="w-4 h-4 text-teal-700" />
-              <dd className="text-stone-600">Verified stores + tracked delivery</dd>
-            </div>
-          </dl>
+          <p className="mt-8 flex items-center gap-2 text-sm text-stone-600">
+            <Truck className="w-4 h-4 text-teal-700" />
+            Verified stores. Tracked delivery.
+          </p>
         </div>
 
         <div className="relative" aria-label="Products from different stores on SettleCart">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-            <div className="space-y-3 sm:space-y-4 pt-6">
-              <HeroProductCard product={HERO_PRODUCTS[0]} delay={0} />
-              <HeroProductCard product={HERO_PRODUCTS[3]} delay={200} className="[animation-delay:1.2s]" />
-            </div>
-            <div className="space-y-3 sm:space-y-4">
-              <HeroProductCard product={HERO_PRODUCTS[1]} delay={100} className="[animation-delay:0.6s]" />
-              <HeroProductCard product={HERO_PRODUCTS[4]} delay={300} className="[animation-delay:1.8s]" />
-            </div>
-            <div className="hidden sm:block space-y-3 sm:space-y-4 pt-12">
-              <HeroProductCard product={HERO_PRODUCTS[2]} delay={150} className="[animation-delay:2.4s]" />
-              <div data-aos="fade-up" data-aos-delay="350" className="rounded-2xl bg-stone-950 text-white p-4 shadow-lg">
-                <p className="text-xs text-stone-300">One cart, 3 stores</p>
-                <p className="mt-1 text-lg font-bold">₦45,550</p>
-                <p className="mt-1 text-[11px] text-stone-400">Single checkout. Tracked delivery.</p>
+          {products === null ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4" aria-hidden="true">
+              <div className="space-y-3 sm:space-y-4 pt-6">
+                <PulseTile />
+                <PulseTile />
+              </div>
+              <div className="space-y-3 sm:space-y-4">
+                <PulseTile />
+                <PulseTile />
+              </div>
+              <div className="hidden sm:block pt-12">
+                <PulseTile />
               </div>
             </div>
-          </div>
+          ) : (
+            <Collage items={products.slice(0, 5)} />
+          )}
         </div>
       </div>
     </section>

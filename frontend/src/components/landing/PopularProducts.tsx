@@ -1,30 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { POPULAR_PRODUCTS, type LandingProduct } from "./data";
+import Link from "next/link";
 import { ProductCard, SectionHeading } from "./cards";
+import { ProductGridSkeleton } from "@/components/ui/Skeleton";
 import { useLiveMarketplace } from "./useLiveMarketplace";
 
-const FILTERS = [
-  { key: "all", label: "All" },
-  { key: "trending", label: "Trending" },
-  { key: "new", label: "New Arrivals" },
-  { key: "best", label: "Best Sellers" },
-  { key: "deal", label: "Deals" },
-] as const;
-
-type FilterKey = (typeof FILTERS)[number]["key"];
-
 export function PopularProducts() {
-  const [filter, setFilter] = useState<FilterKey>("all");
-  const { products: liveProducts } = useLiveMarketplace();
-  const live = liveProducts !== null && liveProducts.length > 0 ? liveProducts : null;
-  const visible: LandingProduct[] =
-    live && filter === "all"
-      ? live
-      : filter === "all"
-        ? POPULAR_PRODUCTS
-        : POPULAR_PRODUCTS.filter((p) => p.trend === filter);
+  const { products } = useLiveMarketplace();
 
   return (
     <section id="deals" aria-labelledby="popular-heading" className="bg-white fluid-section scroll-mt-20">
@@ -34,29 +16,26 @@ export function PopularProducts() {
           title="Popular Right Now."
           copy="What customers are discovering across vendors this week."
         />
-        <div role="tablist" aria-label="Filter products" className="mt-6 flex gap-2 overflow-x-auto pb-1 justify-start sm:justify-center">
-          {FILTERS.map((f) => (
-            <button
-              key={f.key}
-              type="button"
-              role="tab"
-              aria-selected={filter === f.key}
-              onClick={() => setFilter(f.key)}
-              className={`whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-medium min-h-[44px] transition-colors ${
-                filter === f.key
-                  ? "bg-stone-900 text-white"
-                  : "border border-stone-200 bg-white text-stone-600 hover:border-stone-900 hover:text-stone-950"
-              }`}
+        {products === null ? (
+          <div className="mt-6">
+            <ProductGridSkeleton count={8} />
+          </div>
+        ) : products.length === 0 ? (
+          <div className="mt-6 rounded-2xl border border-dashed border-stone-300 bg-[#fafaf9] p-8 text-center">
+            <p className="text-base font-semibold text-stone-900">Nothing trending yet</p>
+            <p className="mt-1.5 text-sm text-stone-600 max-w-md mx-auto">
+              As soon as stores publish products, the most loved ones will appear here.
+            </p>
+            <Link
+              href="/marketplace"
+              className="mt-4 inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold border border-stone-300 text-stone-900 hover:bg-white min-h-[48px]"
             >
-              {f.label}
-            </button>
-          ))}
-        </div>
-        {visible.length === 0 ? (
-          <p className="mt-8 text-center text-sm text-stone-500">No products in this view yet. Check back soon.</p>
+              Explore Marketplace
+            </Link>
+          </div>
         ) : (
           <div className="mt-6 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
-            {visible.map((p) => (
+            {products.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
           </div>

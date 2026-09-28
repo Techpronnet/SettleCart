@@ -6,6 +6,19 @@ import type { LandingProduct } from "./data";
 
 export function ProductVisual({ product, size = "md" }: { product: LandingProduct; size?: "sm" | "md" | "lg" }) {
   const h = size === "lg" ? "h-44 sm:h-52" : size === "sm" ? "h-28" : "h-36 sm:h-40";
+  if (product.image) {
+    return (
+      <div className={`relative ${h} rounded-xl overflow-hidden bg-stone-100 group-hover:scale-[1.02] transition-transform duration-300`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={product.image} alt={product.name} loading="lazy" className="h-full w-full object-cover" />
+        {product.deal && (
+          <span className="absolute top-2 left-2 rounded-full bg-stone-900 text-white text-[10px] font-semibold px-2 py-0.5">
+            {product.deal}
+          </span>
+        )}
+      </div>
+    );
+  }
   return (
     <div className={`relative ${h} rounded-xl ${product.tint} flex items-center justify-center overflow-hidden group-hover:scale-[1.02] transition-transform duration-300`}>
       <i className={`fa ${product.icon} text-4xl sm:text-5xl opacity-80`} aria-hidden="true" />
@@ -66,6 +79,8 @@ export function ProductCard({ product }: { product: LandingProduct }) {
               storeInitial: product.storeInitial,
               icon: product.icon,
               tint: product.tint,
+              backendId: product.backendId ?? null,
+              storeId: product.storeId ?? null,
             }}
           />
         </div>

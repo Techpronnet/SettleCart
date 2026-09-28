@@ -11,6 +11,9 @@ export interface LandingProduct {
   verified?: boolean;
   deal?: string;
   trend?: "trending" | "new" | "best" | "deal";
+  image?: string | null;
+  backendId?: string | null;
+  storeId?: string | null;
 }
 
 export interface LandingStore {

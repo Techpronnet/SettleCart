@@ -64,6 +64,9 @@ export function useLiveMarketplace() {
               icon: "fa-cube",
               tint: "bg-stone-100 text-stone-500",
               verified: true,
+              image: p.images?.[0] ?? null,
+              backendId: p.id,
+              storeId: p.store_id,
             });
           }
         }

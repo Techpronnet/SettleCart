@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { BadgeCheck } from "lucide-react";
-import { CATEGORIES, DISCOVERY_PRODUCTS } from "./data";
+import { CATEGORIES } from "./data";
 import { ProductCard, SectionHeading } from "./cards";
+import { ProductGridSkeleton } from "@/components/ui/Skeleton";
 import { useLiveMarketplace } from "./useLiveMarketplace";
 
 export function Discovery() {
   const { products } = useLiveMarketplace();
-  const visible = products === null || products.length === 0 ? DISCOVERY_PRODUCTS : products;
   return (
     <section id="discover" aria-labelledby="discover-heading" className="bg-[#fafaf9] fluid-section scroll-mt-20">
       <div className="site-container">
@@ -36,11 +36,30 @@ export function Discovery() {
           From verified stores
         </p>
 
-        <div className="mt-6 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
-          {visible.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
+        {products === null ? (
+          <div className="mt-6">
+            <ProductGridSkeleton count={8} />
+          </div>
+        ) : products.length === 0 ? (
+          <div className="mt-6 rounded-2xl border border-dashed border-stone-300 bg-white p-8 text-center">
+            <p className="text-base font-semibold text-stone-900">No live products yet</p>
+            <p className="mt-1.5 text-sm text-stone-600 max-w-md mx-auto">
+              Stores are still setting up. Join the waitlist and we will tell you when shopping opens.
+            </p>
+            <Link
+              href="/waitlist"
+              className="mt-4 inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold text-white bg-stone-900 hover:bg-stone-800 min-h-[48px]"
+            >
+              Join the waitlist
+            </Link>
+          </div>
+        ) : (
+          <div className="mt-6 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
+            {products.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        )}
 
         <div className="mt-8 text-center">
           <Link
