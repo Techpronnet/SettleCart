@@ -16,7 +16,7 @@ export function VendorCTA() {
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
             <Link
               href="/register"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold text-white bg-stone-900 hover:bg-stone-800 min-h-[48px] transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 min-h-[48px] transition-colors"
             >
               Start Selling <ArrowRight className="w-4 h-4" />
             </Link>
@@ -30,19 +30,19 @@ export function VendorCTA() {
           <ul className="mt-6 space-y-2 text-sm text-stone-600">
             {["Publish products in minutes", "Receive and prepare orders", "Get paid through verified settlement"].map((t) => (
               <li key={t} className="flex items-center gap-2">
-                <BadgeCheck className="w-4 h-4 text-teal-700 shrink-0" />
+                <BadgeCheck className="w-4 h-4 text-brand-600 shrink-0" />
                 {t}
               </li>
             ))}
           </ul>
         </div>
 
-        <div data-aos="fade-up" data-aos-delay="120" className="rounded-2xl border border-stone-200 bg-[#fafaf9] p-4 sm:p-6 shadow-[0_16px_50px_rgba(0,0,0,0.08)]" aria-label="Vendor dashboard preview">
+        <div data-aos="fade-up" data-aos-delay="120" className="rounded-2xl border border-sand-border bg-cream p-4 sm:p-6 shadow-[0_16px_50px_rgba(0,0,0,0.08)]" aria-label="Vendor dashboard preview">
           <div className="flex items-center gap-3 rounded-xl bg-white border border-stone-200 p-3.5">
-            <span className="w-10 h-10 rounded-xl bg-stone-900 text-white font-bold flex items-center justify-center">U</span>
+            <span className="w-10 h-10 rounded-xl bg-forest-900 text-white font-bold flex items-center justify-center">U</span>
             <div>
               <p className="text-sm font-semibold text-stone-900">Urban Threads</p>
-              <p className="text-xs text-teal-700 font-medium">Published · Verified</p>
+              <p className="text-xs text-forest-700 font-medium">Published · Verified</p>
             </div>
             <span className="ml-auto inline-flex items-center gap-1 text-xs text-stone-500">
               <TrendingUp className="w-4 h-4" /> ₦1.2M sales

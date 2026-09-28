@@ -14,7 +14,7 @@ function LiveStoreCard({ s, index }: { s: LiveStore; index: number }) {
       className="group rounded-2xl border border-stone-200 bg-white overflow-hidden hover:shadow-[0_12px_32px_rgba(0,0,0,0.10)] hover:-translate-y-1 transition-all duration-300"
     >
       <div className="h-28 bg-stone-100 text-stone-500 flex items-center justify-center">
-        <span className="w-12 h-12 rounded-2xl bg-stone-900 text-white text-xl font-bold flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+        <span className="w-12 h-12 rounded-2xl bg-forest-900 text-white text-xl font-bold flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
           {s.initial}
         </span>
       </div>
@@ -23,13 +23,13 @@ function LiveStoreCard({ s, index }: { s: LiveStore; index: number }) {
           <div className="min-w-0">
             <h3 className="flex items-center gap-1.5 text-sm font-semibold text-stone-900">
               <span className="truncate">{s.name}</span>
-              <BadgeCheck className="w-4 h-4 text-teal-700 shrink-0" aria-label="Verified store" />
+              <BadgeCheck className="w-4 h-4 text-forest-700 shrink-0" aria-label="Verified store" />
             </h3>
             <p className="text-xs text-stone-500">{s.city} · Live now</p>
           </div>
         </div>
         <div className="mt-3 flex items-center justify-between gap-2">
-          <span className="inline-flex items-center rounded-full bg-teal-50 border border-teal-100 px-2 py-0.5 text-[11px] font-semibold text-teal-800">
+          <span className="inline-flex items-center rounded-full bg-forest-50 border border-forest-100 px-2 py-0.5 text-[11px] font-semibold text-forest-800">
             Accepting orders
           </span>
           <Link href={`/stores/${s.id}`} className="inline-flex items-center gap-1 text-xs font-semibold text-stone-900 hover:gap-2 transition-all">
@@ -44,7 +44,7 @@ function LiveStoreCard({ s, index }: { s: LiveStore; index: number }) {
 export function FeaturedStores() {
   const { stores } = useLiveMarketplace();
   return (
-    <section id="stores" aria-labelledby="stores-heading" className="bg-[#fafaf9] fluid-section scroll-mt-20">
+    <section id="stores" aria-labelledby="stores-heading" className="bg-cream fluid-section scroll-mt-20">
       <div className="site-container">
         <SectionHeading
           eyebrow="Stores"
@@ -63,7 +63,7 @@ export function FeaturedStores() {
             </p>
             <Link
               href="/waitlist"
-              className="mt-4 inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold text-white bg-stone-900 hover:bg-stone-800 min-h-[48px]"
+              className="mt-4 inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 min-h-[48px]"
             >
               Join the waitlist
             </Link>
@@ -78,7 +78,7 @@ export function FeaturedStores() {
         <div className="mt-8 text-center">
           <Link
             href="/marketplace"
-            className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl text-sm font-semibold border border-stone-300 text-stone-900 hover:bg-white min-h-[48px] transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl text-sm font-semibold border border-sand-border text-stone-900 hover:bg-white min-h-[48px] transition-colors"
           >
             Explore Stores
           </Link>

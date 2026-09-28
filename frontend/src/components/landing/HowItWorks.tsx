@@ -10,7 +10,7 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" aria-labelledby="hiw-heading" className="bg-[#fafaf9] fluid-section scroll-mt-20">
+    <section id="how-it-works" aria-labelledby="hiw-heading" className="bg-sand fluid-section scroll-mt-20">
       <div className="site-container">
         <SectionHeading
           eyebrow="Simple"
@@ -22,9 +22,9 @@ export function HowItWorks() {
               key={s.title}
               data-aos="fade-up"
               data-aos-delay={i * 90}
-              className="rounded-2xl border border-stone-200 bg-white p-5 sm:p-6 text-center"
+              className="rounded-2xl border border-sand-border bg-white p-5 sm:p-6 text-center"
             >
-              <span className="mx-auto w-11 h-11 rounded-full bg-teal-50 text-teal-800 border border-teal-100 flex items-center justify-center">
+              <span className="mx-auto w-11 h-11 rounded-full bg-brand-50 text-brand-700 border border-brand-100 flex items-center justify-center">
                 <s.icon className="w-5 h-5" />
               </span>
               <h3 className="mt-3 text-base font-semibold text-stone-900">{s.title}</h3>

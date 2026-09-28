@@ -1,13 +1,37 @@
 @import "tailwindcss";
 
+@theme {
+  /* Extracted from ShopEase reference — deep forest + vibrant orange */
+  --color-forest-50: #eff6f1;
+  --color-forest-100: #dce9e2;
+  --color-forest-700: #245a42;
+  --color-forest-800: #1b4634;
+  --color-forest-900: #123524;
+  --color-forest-950: #0a1f16;
+
+  --color-brand-50: #fff3eb;
+  --color-brand-100: #ffe6d5;
+  --color-brand-500: #f96a1b;
+  --color-brand-600: #e75a0d;
+  --color-brand-700: #c74a08;
+
+  --color-cream: #fffbf5;
+  --color-sand: #fdf6ec;
+  --color-sand-border: #e9ddcb;
+  --color-star: #ffa41c;
+}
+
 @layer base {
   :root {
-    --background: #fafaf9;
-    --foreground: #0f172a;
-    --muted: #64748b;
-    --border: #e2e8f0;
-    --accent: #0f766e;
-    --accent-light: #f0fdfa;
+    --background: #fffbf5;
+    --foreground: #0a1f16;
+    --muted: #6b7d74;
+    --border: #e9ddcb;
+    --accent: #e75a0d;
+    --accent-hover: #c74a08;
+    --accent-light: #fff1e6;
+    --forest: #123524;
+    --forest-deep: #0a1f16;
 
     /* Global Responsive Container & Spacing Tokens */
     --container-max: 1280px;
@@ -75,14 +99,14 @@ button, a, input, select, textarea {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #fdf6ec;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #e9ddcb;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #c74a08;
 }
 
 /* Animated flow dash for pathway SVGs */

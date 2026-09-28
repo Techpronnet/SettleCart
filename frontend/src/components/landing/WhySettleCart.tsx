@@ -52,7 +52,7 @@ export function WhySettleCart() {
           {FLOW.map((step, i) => (
             <li key={step.label} className="flex items-center min-w-[150px] flex-1" data-aos="fade-up" data-aos-delay={i * 80}>
               <div className="flex flex-col items-center text-center w-[118px] shrink-0">
-                <span className="w-11 h-11 rounded-2xl bg-stone-900 text-white flex items-center justify-center shadow-sm">
+                <span className="w-11 h-11 rounded-2xl bg-forest-900 text-white flex items-center justify-center shadow-sm">
                   <step.icon className="w-5 h-5" />
                 </span>
                 <p className="mt-2 text-sm font-semibold text-stone-900">{step.label}</p>
@@ -60,7 +60,7 @@ export function WhySettleCart() {
               </div>
               {i < FLOW.length - 1 && (
                 <div aria-hidden="true" className="relative h-px flex-1 bg-stone-200 min-w-6 mx-1 self-start mt-[22px]">
-                  <span className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-teal-600 animate-flow-x" />
+                  <span className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-600 animate-flow-x" />
                 </div>
               )}
             </li>
@@ -73,14 +73,14 @@ export function WhySettleCart() {
               key={lane.stage}
               data-aos="fade-up"
               data-aos-delay={i * 90}
-              className="rounded-2xl border border-stone-200 bg-[#fafaf9] p-5 sm:p-6"
+              className="rounded-2xl border border-sand-border bg-cream p-5 sm:p-6"
             >
-              <p className="text-[11px] font-mono uppercase tracking-wider text-teal-800">{lane.stage}</p>
+              <p className="text-[11px] font-mono uppercase tracking-wider text-brand-700">{lane.stage}</p>
               <h3 id={i === 0 ? "why-heading" : undefined} className="mt-1 text-base font-semibold text-stone-900">{lane.title}</h3>
               <ul className="mt-4 space-y-4">
                 {lane.features.map((f) => (
                   <li key={f.title} className="flex items-start gap-3">
-                    <span className="w-9 h-9 rounded-xl bg-stone-900 text-white flex items-center justify-center shrink-0">
+                    <span className="w-9 h-9 rounded-xl bg-forest-900 text-white flex items-center justify-center shrink-0">
                       <f.icon className="w-4 h-4" />
                     </span>
                     <span>

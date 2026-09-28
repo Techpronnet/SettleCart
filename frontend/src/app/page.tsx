@@ -15,7 +15,7 @@ import { FinalCTA } from "@/components/landing/FinalCTA";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col bg-white text-stone-900 overflow-x-hidden selection:bg-stone-900 selection:text-white">
+    <div className="flex min-h-screen flex-col bg-cream text-forest-950 overflow-x-hidden selection:bg-forest-900 selection:text-white">
       <Navbar />
       <main className="flex-1">
         <Hero />

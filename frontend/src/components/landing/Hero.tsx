@@ -50,9 +50,9 @@ function Collage({ items }: { items: LandingProduct[] }) {
         ) : (
           <SellHereTile />
         )}
-        <div data-aos="fade-up" data-aos-delay="350" className="rounded-2xl bg-stone-950 text-white p-4 shadow-lg">
-          <p className="text-xs text-stone-300">One cart, many stores</p>
-          <p className="mt-1 text-[11px] text-stone-400">Single checkout. Tracked delivery.</p>
+        <div data-aos="fade-up" data-aos-delay="350" className="rounded-2xl bg-forest-800 border border-white/10 text-white p-4 shadow-lg">
+          <p className="text-xs text-white">One cart, many stores</p>
+          <p className="mt-1 text-[11px] text-forest-100">Single checkout. Tracked delivery.</p>
         </div>
       </div>
     </div>
@@ -63,13 +63,13 @@ function SellHereTile() {
   return (
     <Link
       href="/register?as=vendor"
-      className="flex flex-col items-center justify-center gap-1.5 rounded-2xl border border-dashed border-stone-300 bg-white/70 p-3 text-center min-h-[132px] hover:border-stone-900 transition-colors"
+      className="flex flex-col items-center justify-center gap-1.5 rounded-2xl border border-dashed border-white/25 bg-white/10 p-3 text-center min-h-[132px] hover:border-brand-500 transition-colors"
     >
-      <span className="w-8 h-8 rounded-lg bg-stone-900 text-white flex items-center justify-center">
+      <span className="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center">
         <i className="fa fa-plus text-xs" aria-hidden="true" />
       </span>
-      <span className="text-xs font-semibold text-stone-900">Sell here</span>
-      <span className="text-[11px] text-stone-500">Open your store</span>
+      <span className="text-xs font-semibold text-white">Sell here</span>
+      <span className="text-[11px] text-forest-100">Open your store</span>
     </Link>
   );
 }
@@ -77,35 +77,38 @@ function SellHereTile() {
 export function Hero() {
   const { products } = useLiveMarketplace();
   return (
-    <section aria-labelledby="hero-heading" className="relative overflow-hidden bg-white">
-      <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_0%,rgba(13,148,136,0.08),transparent)]" />
+    <section aria-labelledby="hero-heading" className="relative overflow-hidden bg-forest-900 text-white">
+      <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_0%,rgba(249,106,27,0.16),transparent)]" />
       <div className="site-container relative grid gap-10 lg:gap-6 lg:grid-cols-2 items-center py-12 sm:py-16 lg:py-24">
         <div data-aos="fade-up">
-          <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-[3.4rem] font-bold tracking-tight text-stone-950 leading-[1.05] text-balance">
-            Discover More. Shop Local. Get It Delivered.
+          <span className="inline-flex items-center rounded-full bg-white/10 border border-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand-100">
+            Limited only · Up to 50% off
+          </span>
+          <h1 id="hero-heading" className="mt-4 text-4xl sm:text-5xl lg:text-[3.4rem] font-bold tracking-tight leading-[1.05] text-balance">
+            Shop More. <span className="text-brand-500">Save More!</span>
           </h1>
-          <p className="mt-5 text-base sm:text-lg text-stone-600 leading-relaxed max-w-xl">
-            Explore products from different stores, order what you need, pay
-            securely, and have everything delivered to your doorstep, all from
-            one place.
+          <p className="mt-5 text-base sm:text-lg text-forest-100 leading-relaxed max-w-xl">
+            Discover amazing deals on your favorite products. Explore stores,
+            order what you need, pay securely, and get everything delivered
+            to your doorstep.
           </p>
           <div className="mt-7 flex flex-col sm:flex-row gap-3">
             <Link
               href="#discover"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold text-white bg-stone-900 hover:bg-stone-800 shadow-sm min-h-[48px] transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 shadow-sm min-h-[48px] transition-colors"
             >
               Start Shopping
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="#sell"
-              className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl text-sm font-semibold border border-stone-300 text-stone-900 hover:bg-stone-100 min-h-[48px] transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl text-sm font-semibold border border-white/25 text-white hover:bg-white/10 min-h-[48px] transition-colors"
             >
               Become a Vendor
             </Link>
           </div>
-          <p className="mt-8 flex items-center gap-2 text-sm text-stone-600">
-            <Truck className="w-4 h-4 text-teal-700" />
+          <p className="mt-8 flex items-center gap-2 text-sm text-forest-100">
+            <Truck className="w-4 h-4 text-brand-500" />
             Verified stores. Tracked delivery.
           </p>
         </div>

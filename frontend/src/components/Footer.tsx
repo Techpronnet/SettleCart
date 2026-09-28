@@ -47,12 +47,12 @@ const SOCIALS = [
 
 export function Footer() {
   return (
-    <footer className="bg-stone-950 text-stone-300">
+    <footer className="bg-forest-950 text-stone-300">
       <div className="site-container py-12 sm:py-16">
         <div className="grid grid-cols-2 md:grid-cols-6 gap-8 sm:gap-10">
           <div className="col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-2.5" aria-label="SettleCart home">
-              <span className="w-8 h-8 rounded-lg bg-white text-stone-950 flex items-center justify-center">
+              <span className="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center">
                 <i className="fa fa-shopping-bag text-sm" aria-hidden="true" />
               </span>
               <span className="text-lg font-bold tracking-tight text-white">SettleCart</span>

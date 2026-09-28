@@ -9,10 +9,10 @@ const STAGES = [
 
 export function Lifecycle() {
   return (
-    <section aria-labelledby="lifecycle-heading" className="bg-stone-950 text-white fluid-section">
+    <section aria-labelledby="lifecycle-heading" className="bg-forest-950 text-white fluid-section">
       <div className="site-container">
         <div className="max-w-2xl mx-auto text-center" data-aos="fade-up">
-          <span className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-teal-300">
+          <span className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand-500">
             The journey
           </span>
           <h2 id="lifecycle-heading" className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-balance">
@@ -29,7 +29,7 @@ export function Lifecycle() {
               data-aos-delay={i * 100}
               className="relative rounded-2xl border border-white/10 bg-white/[0.04] p-5 sm:p-6"
             >
-              <span className="text-xs font-mono text-teal-300">{s.n}</span>
+              <span className="text-xs font-mono text-brand-500">{s.n}</span>
               <span className="mt-3 w-10 h-10 rounded-xl bg-white/10 text-white flex items-center justify-center">
                 <s.icon className="w-5 h-5" />
               </span>

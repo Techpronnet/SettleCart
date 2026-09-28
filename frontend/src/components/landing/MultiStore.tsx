@@ -9,7 +9,7 @@ const STORES = [
 
 export function MultiStore() {
   return (
-    <section aria-labelledby="multistore-heading" className="bg-white fluid-section">
+    <section aria-labelledby="multistore-heading" className="bg-cream fluid-section">
       <div className="site-container">
         <SectionHeading
           eyebrow="One cart"
@@ -44,7 +44,7 @@ export function MultiStore() {
             <span className="w-px h-10 bg-stone-200" />
           </div>
 
-          <article data-aos="fade-up" data-aos-delay="150" className="rounded-2xl border border-stone-900 bg-stone-950 text-white p-5 sm:p-6 shadow-xl">
+          <article data-aos="fade-up" data-aos-delay="150" className="rounded-2xl border border-forest-900 bg-forest-900 text-white p-5 sm:p-6 shadow-xl">
             <div className="flex items-center gap-2.5">
               <ShoppingCart className="w-5 h-5" />
               <h3 id="multistore-heading" className="text-base font-semibold">Your Cart</h3>
@@ -62,7 +62,7 @@ export function MultiStore() {
               <span className="text-stone-400">Subtotal</span>
               <span className="text-lg font-bold">₦65,750</span>
             </div>
-            <p className="mt-3 rounded-lg bg-teal-900/60 border border-teal-700/50 px-3 py-2.5 text-xs text-teal-100">
+            <p className="mt-3 rounded-lg bg-forest-800 border border-white/10 px-3 py-2.5 text-xs text-white">
               One checkout experience: pay once, track everything.
             </p>
           </article>

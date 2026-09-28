@@ -5,7 +5,7 @@ type Size = "sm" | "md" | "lg";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-stone-900 text-white hover:bg-stone-800 shadow-sm",
+    "bg-brand-600 text-white hover:bg-brand-700 shadow-sm",
   secondary:
     "bg-white text-stone-900 border border-stone-300 hover:bg-stone-50",
   ghost: "text-stone-700 hover:bg-stone-100 hover:text-stone-950",
@@ -38,7 +38,7 @@ export function Button({
       type={rest.type ?? "button"}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
-      className={`inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-2 focus-visible:outline-stone-900 disabled:opacity-50 disabled:pointer-events-none ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-2 focus-visible:outline-brand-600 disabled:opacity-50 disabled:pointer-events-none ${variants[variant]} ${sizes[size]} ${className}`}
       {...rest}
     >
       {loading && <i className="fa fa-spinner fa-spin" aria-hidden="true" />}

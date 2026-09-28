@@ -10,7 +10,7 @@ import { useLiveMarketplace } from "./useLiveMarketplace";
 export function Discovery() {
   const { products } = useLiveMarketplace();
   return (
-    <section id="discover" aria-labelledby="discover-heading" className="bg-[#fafaf9] fluid-section scroll-mt-20">
+    <section id="discover" aria-labelledby="discover-heading" className="bg-cream fluid-section scroll-mt-20">
       <div className="site-container">
         <SectionHeading
           eyebrow="Marketplace"
@@ -23,7 +23,7 @@ export function Discovery() {
             <a
               key={c.label}
               href="#discover"
-              className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-700 hover:border-stone-900 hover:text-stone-950 whitespace-nowrap min-h-[44px] transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-sand-border bg-white px-4 py-2.5 text-sm font-medium text-stone-700 hover:border-brand-600 hover:text-brand-700 whitespace-nowrap min-h-[44px] transition-colors"
             >
               <i className={`fa ${c.icon} text-stone-500`} aria-hidden="true" />
               {c.label}
@@ -31,7 +31,7 @@ export function Discovery() {
           ))}
         </nav>
 
-        <p className="mt-4 flex items-center justify-center gap-1.5 text-xs font-medium text-teal-800">
+        <p className="mt-4 flex items-center justify-center gap-1.5 text-xs font-medium text-brand-700">
           <BadgeCheck className="w-4 h-4" />
           From verified stores
         </p>
@@ -48,7 +48,7 @@ export function Discovery() {
             </p>
             <Link
               href="/waitlist"
-              className="mt-4 inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold text-white bg-stone-900 hover:bg-stone-800 min-h-[48px]"
+              className="mt-4 inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 min-h-[48px]"
             >
               Join the waitlist
             </Link>
@@ -64,7 +64,7 @@ export function Discovery() {
         <div className="mt-8 text-center">
           <Link
             href="/marketplace"
-            className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl text-sm font-semibold text-white bg-stone-900 hover:bg-stone-800 min-h-[48px] transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 min-h-[48px] transition-colors"
           >
             Explore Marketplace
           </Link>

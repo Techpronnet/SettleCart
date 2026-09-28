@@ -12,7 +12,7 @@ export function ProductVisual({ product, size = "md" }: { product: LandingProduc
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={product.image} alt={product.name} loading="lazy" className="h-full w-full object-cover" />
         {product.deal && (
-          <span className="absolute top-2 left-2 rounded-full bg-stone-900 text-white text-[10px] font-semibold px-2 py-0.5">
+          <span className="absolute top-2 left-2 rounded-full bg-brand-600 text-white text-[10px] font-semibold px-2 py-0.5">
             {product.deal}
           </span>
         )}
@@ -23,7 +23,7 @@ export function ProductVisual({ product, size = "md" }: { product: LandingProduc
     <div className={`relative ${h} rounded-xl ${product.tint} flex items-center justify-center overflow-hidden group-hover:scale-[1.02] transition-transform duration-300`}>
       <i className={`fa ${product.icon} text-4xl sm:text-5xl opacity-80`} aria-hidden="true" />
       {product.deal && (
-        <span className="absolute top-2 left-2 rounded-full bg-stone-900 text-white text-[10px] font-semibold px-2 py-0.5">
+        <span className="absolute top-2 left-2 rounded-full bg-brand-600 text-white text-[10px] font-semibold px-2 py-0.5">
           {product.deal}
         </span>
       )}
@@ -33,7 +33,7 @@ export function ProductVisual({ product, size = "md" }: { product: LandingProduc
 
 export function ProductCard({ product }: { product: LandingProduct }) {
   return (
-    <article className="group rounded-2xl border border-stone-200 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.10)] hover:-translate-y-1 transition-all duration-300 motion-reduce:transform-none motion-reduce:transition-none">
+    <article className="group rounded-2xl border border-sand-border bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.10)] hover:-translate-y-1 transition-all duration-300 motion-reduce:transform-none motion-reduce:transition-none">
       <div className="relative">
         <ProductVisual product={product} />
         <WishlistButton
@@ -55,7 +55,7 @@ export function ProductCard({ product }: { product: LandingProduct }) {
           </span>
           <span className="truncate font-medium">{product.store}</span>
           {product.verified && (
-            <span className="inline-flex items-center gap-0.5 text-teal-700 shrink-0" title="Verified store">
+            <span className="inline-flex items-center gap-0.5 text-forest-700 shrink-0" title="Verified store">
               <BadgeCheck className="w-3.5 h-3.5" />
               <span className="sr-only">Verified store</span>
             </span>
@@ -65,7 +65,7 @@ export function ProductCard({ product }: { product: LandingProduct }) {
           {product.name}
         </h3>
         <div className="mt-1 flex items-center gap-1 text-xs text-stone-500">
-          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+          <Star className="w-3.5 h-3.5 fill-star text-star" />
           <span className="font-medium text-stone-700">{product.rating}</span>
         </div>
         <div className="mt-2 flex items-center justify-between gap-2">
@@ -122,11 +122,11 @@ export function SectionHeading({
   return (
     <div className={`max-w-2xl flex flex-col ${alignCls}`} data-aos="fade-up">
       {eyebrow && (
-        <span className="inline-flex items-center rounded-full border border-stone-200 bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-teal-800">
+        <span className="inline-flex items-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand-700">
           {eyebrow}
         </span>
       )}
-      <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-stone-900 text-balance">
+      <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-forest-950 text-balance">
         {title}
       </h2>
       {copy && <p className="mt-3 text-sm sm:text-base text-stone-600 leading-relaxed">{copy}</p>}
@@ -139,7 +139,7 @@ export function CtaRow({ primary, secondary }: { primary: { label: string; href:
     <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
       <Link
         href={primary.href}
-        className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl text-sm font-semibold text-white bg-stone-900 hover:bg-stone-800 shadow-sm min-h-[48px] transition-colors"
+        className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 shadow-sm min-h-[48px] transition-colors"
       >
         {primary.label}
       </Link>

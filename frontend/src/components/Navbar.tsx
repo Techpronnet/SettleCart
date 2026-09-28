@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Menu, X, Search, ShoppingCart, ArrowRight } from "lucide-react";
 import { useCart, CartCountBadge, CartDrawer } from "./ui/Dialog";
 
@@ -16,7 +17,16 @@ const NAV_LINKS = [
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [query, setQuery] = useState("");
+  const router = useRouter();
   const { count, setCartOpen } = useCart();
+
+  function submitSearch(e: React.FormEvent) {
+    e.preventDefault();
+    const next = query.trim();
+    setMobileOpen(false);
+    router.push(next ? `/search?q=${encodeURIComponent(next)}` : "/search");
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -53,10 +63,10 @@ export function Navbar() {
           <div className="flex items-center justify-between h-16 sm:h-[72px] gap-3">
             <Link
               href="/"
-              className="flex items-center gap-2.5 shrink-0 rounded-md py-1 focus-visible:outline-2 focus-visible:outline-stone-900"
+              className="flex items-center gap-2.5 shrink-0 rounded-md py-1 focus-visible:outline-2 focus-visible:outline-brand-600"
               aria-label="SettleCart home"
             >
-              <span className="w-8 h-8 rounded-lg bg-stone-900 text-white flex items-center justify-center shadow-sm">
+              <span className="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center shadow-sm">
                 <i className="fa fa-shopping-bag text-sm" aria-hidden="true" />
               </span>
               <span className="text-xl font-bold tracking-tight text-stone-900">
@@ -66,20 +76,45 @@ export function Navbar() {
 
             <nav aria-label="Main Navigation" className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-medium text-stone-600">
               {NAV_LINKS.map((link) => (
-                <a key={link.href} href={link.href} className="hover:text-stone-950 transition-colors py-1.5 rounded-md focus-visible:outline-2 focus-visible:outline-stone-900">
+                <a key={link.href} href={link.href} className="hover:text-stone-950 transition-colors py-1.5 rounded-md focus-visible:outline-2 focus-visible:outline-brand-600">
                   {link.label}
                 </a>
               ))}
             </nav>
 
             <div className="flex items-center gap-1.5 sm:gap-2.5">
-              <a
-                href="/marketplace"
+              <form
+                role="search"
+                onSubmit={submitSearch}
+                className="hidden md:flex items-center gap-1 rounded-md border border-stone-200 bg-white px-2 py-1 focus-within:border-brand-600"
+              >
+                <label htmlFor="navbar-search" className="sr-only">
+                  Search products or stores
+                </label>
+                <input
+                  id="navbar-search"
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search products, stores…"
+                  autoComplete="off"
+                  className="w-36 lg:w-52 bg-transparent px-1.5 py-1.5 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none min-h-[32px]"
+                />
+                <button
+                  type="submit"
+                  aria-label="Search"
+                  className="p-2 rounded-md text-stone-600 hover:text-stone-950 hover:bg-stone-100 flex items-center justify-center transition-colors"
+                >
+                  <Search className="w-5 h-5" />
+                </button>
+              </form>
+              <Link
+                href="/search"
                 aria-label="Search products"
-                className="p-2.5 rounded-md text-stone-600 hover:text-stone-950 hover:bg-stone-100 min-h-[44px] min-w-[44px] hidden sm:flex items-center justify-center transition-colors"
+                className="p-2.5 rounded-md text-stone-600 hover:text-stone-950 hover:bg-stone-100 min-h-[44px] min-w-[44px] flex md:hidden items-center justify-center transition-colors"
               >
                 <Search className="w-5 h-5" />
-              </a>
+              </Link>
               <Link
                 href="/login"
                 className="hidden md:inline-flex items-center justify-center px-3.5 py-2 rounded-md text-sm font-medium text-stone-700 hover:text-stone-950 hover:bg-stone-100 min-h-[40px] transition-colors"
@@ -88,7 +123,7 @@ export function Navbar() {
               </Link>
               <Link
                 href="/register"
-                className="hidden md:inline-flex items-center justify-center px-4 py-2.5 rounded-md text-sm font-medium text-white bg-stone-900 hover:bg-stone-800 min-h-[40px] shadow-sm transition-colors"
+                className="hidden md:inline-flex items-center justify-center px-4 py-2.5 rounded-md text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 min-h-[40px] shadow-sm transition-colors"
               >
                 Sign Up
               </Link>
@@ -126,7 +161,7 @@ export function Navbar() {
         >
           <div className="flex items-center justify-between pb-5 border-b border-stone-200/80">
             <span className="flex items-center gap-2.5">
-              <span className="w-8 h-8 rounded-lg bg-stone-900 text-white flex items-center justify-center text-sm">
+              <span className="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center text-sm">
                 <i className="fa fa-shopping-bag" aria-hidden="true" />
               </span>
               <span className="text-xl font-bold tracking-tight text-stone-900">SettleCart</span>
@@ -141,6 +176,23 @@ export function Navbar() {
             </button>
           </div>
 
+          <form role="search" onSubmit={submitSearch} className="pt-5">
+            <label htmlFor="mobile-search" className="sr-only">
+              Search products or stores
+            </label>
+            <div className="flex items-center gap-2 rounded-lg border border-stone-200 bg-white px-3 py-1 focus-within:border-brand-600">
+              <Search className="w-4 h-4 text-stone-400 shrink-0" />
+              <input
+                id="mobile-search"
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search products, stores…"
+                autoComplete="off"
+                className="flex-1 bg-transparent py-2.5 text-base text-stone-900 placeholder:text-stone-400 focus:outline-none min-h-[48px]"
+              />
+            </div>
+          </form>
           <nav aria-label="Mobile" className="py-6 space-y-1">
             {NAV_LINKS.map((link) => (
               <a
@@ -167,7 +219,7 @@ export function Navbar() {
               <Link
                 href="/register"
                 onClick={() => setMobileOpen(false)}
-                className="inline-flex items-center justify-center px-5 py-3 rounded-lg text-sm font-semibold text-white bg-stone-900 min-h-[48px]"
+                className="inline-flex items-center justify-center px-5 py-3 rounded-lg text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 min-h-[48px]"
               >
                 Sign Up
               </Link>

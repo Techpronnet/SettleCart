@@ -21,14 +21,14 @@ export function PopularProducts() {
             <ProductGridSkeleton count={8} />
           </div>
         ) : products.length === 0 ? (
-          <div className="mt-6 rounded-2xl border border-dashed border-stone-300 bg-[#fafaf9] p-8 text-center">
+          <div className="mt-6 rounded-2xl border border-dashed border-stone-300 bg-cream p-8 text-center">
             <p className="text-base font-semibold text-stone-900">Nothing trending yet</p>
             <p className="mt-1.5 text-sm text-stone-600 max-w-md mx-auto">
               As soon as stores publish products, the most loved ones will appear here.
             </p>
             <Link
               href="/marketplace"
-              className="mt-4 inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold border border-stone-300 text-stone-900 hover:bg-white min-h-[48px]"
+              className="mt-4 inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 min-h-[48px]"
             >
               Explore Marketplace
             </Link>
