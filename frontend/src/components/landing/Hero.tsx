@@ -81,10 +81,7 @@ export function Hero() {
       <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_0%,rgba(249,106,27,0.16),transparent)]" />
       <div className="site-container relative grid gap-10 lg:gap-6 lg:grid-cols-2 items-center py-12 sm:py-16 lg:py-24">
         <div data-aos="fade-up">
-          <span className="inline-flex items-center rounded-full bg-white/10 border border-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand-100">
-            Limited only · Up to 50% off
-          </span>
-          <h1 id="hero-heading" className="mt-4 text-4xl sm:text-5xl lg:text-[3.4rem] font-bold tracking-tight leading-[1.05] text-balance">
+          <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-[3.4rem] font-bold tracking-tight leading-[1.05] text-balance">
             Shop More. <span className="text-brand-500">Save More!</span>
           </h1>
           <p className="mt-5 text-base sm:text-lg text-forest-100 leading-relaxed max-w-xl">
