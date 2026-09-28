@@ -20,10 +20,15 @@ class Notification(TimestampMixin, Base):
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     message: Mapped[str] = mapped_column(Text, nullable=False)
     channel: Mapped[NotificationChannel] = mapped_column(
-        SAEnum(NotificationChannel), default=NotificationChannel.IN_APP, nullable=False
+        SAEnum(NotificationChannel, values_callable=lambda x: [e.value for e in x]),
+        default=NotificationChannel.IN_APP,
+        nullable=False,
     )
     event_type: Mapped[NotificationEventType] = mapped_column(
-        SAEnum(NotificationEventType), default=NotificationEventType.GENERAL, nullable=False, index=True
+        SAEnum(NotificationEventType, values_callable=lambda x: [e.value for e in x]),
+        default=NotificationEventType.GENERAL,
+        nullable=False,
+        index=True,
     )
     data: Mapped[Optional[dict[str, Any]]] = mapped_column(JSON, nullable=True)
     is_read: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, index=True)

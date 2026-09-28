@@ -11,7 +11,7 @@ from app.models.store import Store
 from app.models.order import Order, VendorOrder
 from app.models.catalogue import Product
 from app.models.enums import KYCStatus, OrderStatus
-from app.admin.schemas import DashboardStats, KYCReviewRequest
+from app.admin.schemas import DashboardStats, KYCReviewRequest, KYCReviewResponse
 from app.core.exceptions import NotFoundException, BadRequestException
 
 class AdminService:
@@ -47,32 +47,33 @@ class AdminService:
         return list(result.scalars().all()), total.scalar_one()
 
     @staticmethod
-    async def review_kyc(db: AsyncSession, data: KYCReviewRequest) -> Business:
+    async def review_kyc(db: AsyncSession, data: KYCReviewRequest) -> KYCReviewResponse:
         if data.decision not in (KYCStatus.VERIFIED, KYCStatus.REJECTED):
             raise BadRequestException("Decision must be VERIFIED or REJECTED")
-            
+
         result = await db.execute(select(Business).where(Business.id == data.business_id))
         business = result.scalar_one_or_none()
-        
+
         if not business:
             raise NotFoundException("Business not found")
-            
+
+        reviewed_at = datetime.now(timezone.utc)
         business.kyc_status = data.decision
-        # Since model might not have reviewed_at or notes, just update what we can. 
-        # Assuming we just set it as verified or rejected for now based on what's available.
-        
+        business.kyc_reviewed_at = reviewed_at
+
         await db.commit()
-        await db.refresh(business)
-        
+
         try:
             from app.notifications.service import NotificationService
             await NotificationService.dispatch_kyc_status(db, business, data.decision.value, data.notes)
         except Exception:
-            pass
+            await db.rollback()
 
-        # We will attach reviewed_at manually if missing on model for response format
-        business.reviewed_at = datetime.now(timezone.utc)
-        return business
+        return KYCReviewResponse(
+            business_id=business.id,
+            kyc_status=business.kyc_status,
+            reviewed_at=reviewed_at,
+        )
 
     @staticmethod
     async def list_all_orders(db: AsyncSession, page: int, size: int, status: Optional[OrderStatus] = None) -> Tuple[List[Order], int]:
