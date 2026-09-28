@@ -9,7 +9,7 @@ import { ListSkeleton } from "@/components/ui/Skeleton";
 import { ErrorState } from "@/components/ui/States";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { VendorSetupPrompt } from "@/components/vendor/VendorBits";
-import { KycDocumentUploader } from "@/components/vendor/KycDocuments";
+import { KycDocumentUploader, type KycDocState } from "@/components/vendor/KycDocuments";
 import {
   ApiError,
   friendlyApiMessage,
@@ -31,6 +31,7 @@ const STATE_COPY: Record<string, string> = {
 
 function KycBody() {
   const [biz, setBiz] = useState<BusinessResponse | null>(null);
+  const [docs, setDocs] = useState<KycDocState | null>(null);
   const [missing, setMissing] = useState(false);
   const [error, setError] = useState("");
   const [actionError, setActionError] = useState("");
@@ -47,7 +48,12 @@ function KycBody() {
         return;
       }
       setVendorBusiness(found.id);
-      setBiz(await getBusiness(found.id));
+      const full = await getBusiness(found.id);
+      setBiz(full);
+      setDocs({
+        government_id: Boolean(full.government_id_url),
+        cac_certificate: Boolean(full.cac_document_url),
+      });
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "We couldn't load verification.");
     }
@@ -64,7 +70,13 @@ function KycBody() {
     setActionError("");
     setWorking(true);
     try {
-      setBiz(await submitKyc(biz.id));
+      const updated = await submitKyc(biz.id);
+      const full = await getBusiness(updated.id);
+      setBiz(full);
+      setDocs({
+        government_id: Boolean(full.government_id_url),
+        cac_certificate: Boolean(full.cac_document_url),
+      });
     } catch (err) {
       setActionError(
         err instanceof ApiError ? friendlyApiMessage(err, "Submission failed.") : "Network error. Try again."
@@ -83,6 +95,7 @@ function KycBody() {
   if (!biz) return <ListSkeleton rows={3} />;
 
   const submittable = biz.kyc_status === "pending" || biz.kyc_status === "rejected";
+  const hasGovId = docs?.government_id ?? Boolean(biz.government_id_url);
 
   return (
     <div className="space-y-4">
@@ -93,7 +106,7 @@ function KycBody() {
             government_id: Boolean(biz.government_id_url),
             cac_certificate: Boolean(biz.cac_document_url),
           }}
-          onChange={() => {}}
+          onChange={setDocs}
         />
       </Card>
 
@@ -108,9 +121,16 @@ function KycBody() {
           </p>
         )}
         {submittable && (
-          <Button onClick={submit} loading={working} className="mt-4">
-            {biz.kyc_status === "rejected" ? "Resubmit for verification" : "Submit for verification"}
-          </Button>
+          <>
+            <Button onClick={submit} loading={working} className="mt-4" disabled={!hasGovId}>
+              {biz.kyc_status === "rejected" ? "Resubmit for verification" : "Submit for verification"}
+            </Button>
+            {!hasGovId && (
+              <p className="mt-2 text-xs text-stone-500">
+                Upload your government ID above to enable submission.
+              </p>
+            )}
+          </>
         )}
       </Card>
 

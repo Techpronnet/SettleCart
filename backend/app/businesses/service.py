@@ -4,7 +4,7 @@ from uuid import UUID
 from datetime import datetime, timezone
 from app.models.business import Business
 from app.businesses.schemas import BusinessCreateRequest, BusinessUpdateRequest
-from app.core.exceptions import NotFoundException
+from app.core.exceptions import NotFoundException, BadRequestException
 from app.models.enums import KYCStatus
 
 class BusinessService:
@@ -50,6 +50,8 @@ class BusinessService:
 
     @staticmethod
     async def submit_kyc(db: AsyncSession, business: Business) -> Business:
+        if not business.government_id_url:
+            raise BadRequestException("Upload your government ID before submitting for verification")
         business.kyc_status = KYCStatus.UNDER_REVIEW
         business.kyc_submitted_at = datetime.now(timezone.utc)
         await db.flush()
