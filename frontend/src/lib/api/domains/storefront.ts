@@ -5,7 +5,7 @@
  * searching products across the marketplace, and inspecting product details.
  */
 
-import { client } from '../client';
+import { client, getBaseUrl } from '../client';
 import {
   ApiError,
   type CategoryResponse,
@@ -189,15 +189,25 @@ export interface ShowcaseResponse {
 
 /**
  * Retrieves the aggregated showcase of top stores and trending products in 1 single request.
+ * Uses a plain typed fetch because the endpoint postdates the generated schema.
  */
 export async function getShowcase(): Promise<ShowcaseResponse> {
-  const { data } = await (client.GET as any)('/api/v1/stores/showcase', {});
-
-  if (!data) {
-    throw new ApiError(500, 'internal_error', 'Failed to retrieve showcase');
+  let res: Response;
+  try {
+    res = await fetch(`${getBaseUrl()}/api/v1/stores/showcase`, {
+      headers: { Accept: 'application/json' },
+    });
+  } catch {
+    throw new ApiError(0, 'network_error', 'Could not reach the server.');
   }
-
-  return data as ShowcaseResponse;
+  if (!res.ok) {
+    throw new ApiError(res.status, 'http_error', `Showcase request failed (${res.status}).`);
+  }
+  const data = (await res.json()) as ShowcaseResponse;
+  if (!data || !Array.isArray(data.stores)) {
+    throw new ApiError(500, 'internal_error', 'Showcase returned an unexpected response.');
+  }
+  return data;
 }
 
 export const storefront = {

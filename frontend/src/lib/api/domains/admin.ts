@@ -149,6 +149,26 @@ export async function getAnyTask(taskId: string): Promise<DeliveryTaskDetailResp
   return data;
 }
 
+export interface SignedUrl {
+  signed_url: string;
+  expires_in_seconds: number;
+}
+
+/**
+ * Fetches a short-lived signed URL for a confidential KYC document.
+ * URLs expire (default 1h) so they are fetched on demand, never stored.
+ */
+export async function getKycDocumentUrl(
+  businessId: string,
+  documentType: 'government_id' | 'cac_certificate'
+): Promise<SignedUrl> {
+  const { data } = await client.GET('/api/v1/media/kyc/{business_id}/{document_type}/signed-url', {
+    params: { path: { business_id: businessId, document_type: documentType } },
+  });
+  if (!data) throw new ApiError(404, 'not_found', 'Document not available.');
+  return data as SignedUrl;
+}
+
 export async function assignRider(taskId: string, riderId: string): Promise<DeliveryTaskResponse> {
   const body: AssignRiderRequest = { rider_id: riderId };
   const { data } = await client.POST('/api/v1/dispatch/tasks/{task_id}/assign', {
@@ -209,6 +229,7 @@ export const admin = {
   listAdminStores,
   listAllDeliveryTasks,
   getAnyTask,
+  getKycDocumentUrl,
   assignRider,
   settleVendorOrder,
   reviewWithdrawal,

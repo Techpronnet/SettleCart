@@ -9,9 +9,11 @@ import { ListSkeleton } from "@/components/ui/Skeleton";
 import { EmptyState, ErrorState } from "@/components/ui/States";
 import { Pagination } from "@/components/ui/Navigation";
 import { RequireAuth } from "@/components/auth/RequireAuth";
+import { BottomSheet } from "@/components/ui/BottomSheet";
 import {
   ApiError,
   friendlyApiMessage,
+  getKycDocumentUrl,
   listPendingKyc,
   reviewKyc,
   type BusinessResponse,
@@ -20,6 +22,110 @@ import {
 import { formatDateTime } from "@/lib/format";
 
 const PAGE_SIZE = 20;
+
+function KycDocRow({
+  businessId,
+  docType,
+  label,
+  provided,
+}: {
+  businessId: string;
+  docType: "government_id" | "cac_certificate";
+  label: string;
+  provided: boolean;
+}) {
+  const [url, setUrl] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [imgBroken, setImgBroken] = useState(false);
+
+  async function view() {
+    setError("");
+    if (url) {
+      setImgBroken(false);
+      setOpen(true);
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await getKycDocumentUrl(businessId, docType);
+      setUrl(res.signed_url);
+      setImgBroken(false);
+      setOpen(true);
+    } catch (err) {
+      setError(
+        err instanceof ApiError ? friendlyApiMessage(err, "Could not load document.") : "Network error."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <dt className="text-stone-500">{label}</dt>
+      <dd className="text-stone-800">
+        {provided ? (
+          <>
+            <button
+              type="button"
+              onClick={view}
+              disabled={loading}
+              className="font-medium text-stone-900 underline min-h-[36px] disabled:opacity-50"
+            >
+              {loading ? "Loading…" : "View document"}
+            </button>
+            {error && (
+              <span role="alert" className="block text-red-700">
+                {error}
+              </span>
+            )}
+          </>
+        ) : (
+          "Missing"
+        )}
+      </dd>
+      <BottomSheet open={open} onClose={() => setOpen(false)} title={label}>
+        {url && !imgBroken ? (
+          <div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={url}
+              alt={`${label} submitted for verification`}
+              className="w-full rounded-lg border border-stone-200"
+              onError={() => setImgBroken(true)}
+            />
+            <a
+              href={url}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-semibold border border-stone-300 text-stone-900 min-h-[48px]"
+            >
+              Open full document
+            </a>
+          </div>
+        ) : (
+          url && (
+            <div>
+              <p className="text-sm text-stone-600">
+                This file cannot be previewed here (for example a PDF).
+              </p>
+              <a
+                href={url}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-flex items-center justify-center w-full px-4 py-3 rounded-xl text-sm font-semibold text-white bg-stone-900 min-h-[48px]"
+              >
+                Open full document
+              </a>
+            </div>
+          )
+        )}
+      </BottomSheet>
+    </div>
+  );
+}
 
 function KycBody() {
   const [queue, setQueue] = useState<BusinessResponse[]>([]);
@@ -92,14 +198,18 @@ function KycBody() {
                   </p>
                   <p className="mt-1 text-sm text-stone-600">{b.description || "No description provided."}</p>
                   <dl className="mt-2 grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                      <dt className="text-stone-500">CAC document</dt>
-                      <dd className="text-stone-800">{b.cac_document_url ? "Provided" : "Missing"}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-stone-500">Government ID</dt>
-                      <dd className="text-stone-800">{b.government_id_url ? "Provided" : "Missing"}</dd>
-                    </div>
+                    <KycDocRow
+                      businessId={b.id}
+                      docType="cac_certificate"
+                      label="CAC document"
+                      provided={Boolean(b.cac_document_url)}
+                    />
+                    <KycDocRow
+                      businessId={b.id}
+                      docType="government_id"
+                      label="Government ID"
+                      provided={Boolean(b.government_id_url)}
+                    />
                   </dl>
                   <label htmlFor={`notes-${b.id}`} className="mt-3 block text-xs font-medium text-stone-700">
                     Review notes

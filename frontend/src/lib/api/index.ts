@@ -225,6 +225,7 @@ export {
   listAdminStores,
   listAllDeliveryTasks,
   getAnyTask,
+  getKycDocumentUrl,
   assignRider,
   settleVendorOrder,
   reviewWithdrawal,
