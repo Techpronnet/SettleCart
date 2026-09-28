@@ -1,9 +1,14 @@
+"use client";
+
 import Link from "next/link";
 import { BadgeCheck } from "lucide-react";
 import { CATEGORIES, DISCOVERY_PRODUCTS } from "./data";
 import { ProductCard, SectionHeading } from "./cards";
+import { useLiveMarketplace } from "./useLiveMarketplace";
 
 export function Discovery() {
+  const { products } = useLiveMarketplace();
+  const visible = products === null || products.length === 0 ? DISCOVERY_PRODUCTS : products;
   return (
     <section id="discover" aria-labelledby="discover-heading" className="bg-[#fafaf9] fluid-section scroll-mt-20">
       <div className="site-container">
@@ -32,7 +37,7 @@ export function Discovery() {
         </p>
 
         <div className="mt-6 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
-          {DISCOVERY_PRODUCTS.map((p) => (
+          {visible.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
         </div>

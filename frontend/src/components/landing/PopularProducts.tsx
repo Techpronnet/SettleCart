@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { POPULAR_PRODUCTS, type LandingProduct } from "./data";
 import { ProductCard, SectionHeading } from "./cards";
+import { useLiveMarketplace } from "./useLiveMarketplace";
 
 const FILTERS = [
   { key: "all", label: "All" },
@@ -16,8 +17,14 @@ type FilterKey = (typeof FILTERS)[number]["key"];
 
 export function PopularProducts() {
   const [filter, setFilter] = useState<FilterKey>("all");
+  const { products: liveProducts } = useLiveMarketplace();
+  const live = liveProducts !== null && liveProducts.length > 0 ? liveProducts : null;
   const visible: LandingProduct[] =
-    filter === "all" ? POPULAR_PRODUCTS : POPULAR_PRODUCTS.filter((p) => p.trend === filter);
+    live && filter === "all"
+      ? live
+      : filter === "all"
+        ? POPULAR_PRODUCTS
+        : POPULAR_PRODUCTS.filter((p) => p.trend === filter);
 
   return (
     <section id="deals" aria-labelledby="popular-heading" className="bg-white fluid-section scroll-mt-20">
