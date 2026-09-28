@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/Badge";
 import { ListSkeleton } from "@/components/ui/Skeleton";
 import { ErrorState } from "@/components/ui/States";
 import { RequireAuth } from "@/components/auth/RequireAuth";
-import { VendorSetupPrompt } from "@/components/vendor/VendorBits";
+import { VendorSetupPrompt, ShareStorefrontButton } from "@/components/vendor/VendorBits";
 import {
   ApiError,
   friendlyApiMessage,
@@ -36,6 +36,7 @@ function StoreBody() {
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
   const [toggling, setToggling] = useState(false);
+  const [origin, setOrigin] = useState("");
   const [seeded, setSeeded] = useState<string | null>(null);
 
   async function load() {
@@ -55,8 +56,10 @@ function StoreBody() {
   }
 
   useEffect(() => {
-    // Initial load on mount.
+    // Client-only origin restore.
     // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOrigin(window.location.origin);
+    // Initial load on mount.
     load();
   }, []);
 
@@ -139,12 +142,18 @@ function StoreBody() {
             {store.is_published ? "Unpublish store" : "Publish store"}
           </Button>
           <Link
-            href={`/stores/${store.id}`}
+            href="/vendor/store/preview"
             className="inline-flex items-center justify-center px-5 py-2.5 rounded-md text-sm font-medium border border-stone-300 text-stone-900 hover:bg-stone-100 min-h-[40px]"
           >
             View storefront
           </Link>
+          <ShareStorefrontButton storeId={store.id} storeName={store.name} />
         </div>
+        {store.is_published && origin && (
+          <p className="mt-2.5 text-xs text-stone-500 break-all">
+            Public link: {origin}/stores/{store.id}
+          </p>
+        )}
       </Card>
 
       <Card title="Store details">

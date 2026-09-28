@@ -11,18 +11,21 @@ import type { ProductResponse } from "@/lib/api";
 export function BackendProductCard({
   product,
   storeName,
+  productHref,
 }: {
   product: ProductResponse;
   storeName?: string;
+  productHref?: string;
 }) {
   const priceNaira = Number(product.price) || 0;
   const inStock = product.is_active && (!product.track_inventory || product.inventory_count > 0);
+  const detailsHref = productHref ?? `/products/${product.id}`;
 
   return (
     <article className="group rounded-2xl border border-stone-200 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.10)] hover:-translate-y-1 transition-all duration-300 motion-reduce:transform-none motion-reduce:transition-none">
       <div className="relative">
         <Link
-          href={`/products/${product.id}`}
+          href={detailsHref}
           aria-label={`View ${product.name}`}
           className="block rounded-xl bg-stone-100 h-36 sm:h-40 overflow-hidden"
         >
@@ -62,7 +65,7 @@ export function BackendProductCard({
           </p>
         )}
         <h3 className="mt-1 text-sm font-semibold text-stone-900 leading-snug line-clamp-1">
-          <Link href={`/products/${product.id}`} className="hover:underline">
+          <Link href={detailsHref} className="hover:underline">
             {product.name}
           </Link>
         </h3>
