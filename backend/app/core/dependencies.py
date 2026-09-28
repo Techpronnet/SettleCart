@@ -1,4 +1,4 @@
-from fastapi import Depends
+from fastapi import Depends, Request
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
@@ -7,7 +7,22 @@ from app.core.exceptions import UnauthorizedException, ForbiddenException
 from app.models.user import User
 from sqlalchemy import select
 import uuid
-from typing import Callable
+from typing import Callable, Optional
+
+
+async def get_optional_user(request: Request, db: AsyncSession = Depends(get_db)) -> Optional[User]:
+    """Best-effort authentication: returns None for guests or invalid tokens
+    instead of raising, so public endpoints can serve published content."""
+    auth = request.headers.get("Authorization")
+    if not auth or not auth.lower().startswith("bearer "):
+        return None
+    token = auth.split(" ", 1)[1].strip()
+    if not token:
+        return None
+    try:
+        return await get_current_user(token=token, db=db)
+    except Exception:
+        return None
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 

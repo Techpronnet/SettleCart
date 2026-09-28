@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 from typing import Optional
-from app.core.dependencies import get_db, get_current_user, require_role
+from app.core.dependencies import get_db, get_current_user, get_optional_user, require_role
 from app.stores.schemas import (
     StoreCreateRequest, StoreUpdateRequest, 
     StoreResponse, StoreListResponse
@@ -52,7 +52,7 @@ async def list_published_stores(
 async def get_store(
     store_id: UUID,
     db: AsyncSession = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user)
+    current_user: Optional[User] = Depends(get_optional_user)
 ):
     store = await StoreService.get_by_id(db, store_id)
     if store.is_published:

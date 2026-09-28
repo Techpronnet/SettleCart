@@ -48,7 +48,23 @@ export function StorefrontView({
       .then((s) => {
         if (!cancelled) setStore(s);
       })
-      .catch((err) => {
+      .catch(async (err) => {
+        // Guests may hit auth-walled deployments: fall back to the public
+        // directory before giving up.
+        if (!cancelled && err instanceof ApiError && err.isUnauthorized) {
+          try {
+            const { getPublicStores } = await import("@/lib/api");
+            const pub = await getPublicStores({ page: 1, size: 100 });
+            const found = pub.stores.find((s) => s.id === storeId) ?? null;
+            if (!cancelled) {
+              if (found) setStore(found);
+              else setError("Store not found.");
+            }
+            return;
+          } catch {
+            // fall through to generic error
+          }
+        }
         if (!cancelled) setError(err instanceof ApiError ? err.message : "Store not found.");
       });
     getCategories(storeId)
