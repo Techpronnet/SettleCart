@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/States";
-import { RequireAuth } from "@/components/auth/RequireAuth";
 import { AddToCartButton } from "@/components/ui/Dialog";
 import { loadWishlist, removeSaved, type SavedItem } from "@/lib/favorites";
 import { formatMoney } from "@/lib/format";
@@ -81,9 +80,7 @@ export default function SavedPage() {
   return (
     <div>
       <PageHeader title="Saved items" description="Your wishlist, ready when you are." />
-      <RequireAuth>
-        <SavedBody />
-      </RequireAuth>
+      <SavedBody />
     </div>
   );
 }

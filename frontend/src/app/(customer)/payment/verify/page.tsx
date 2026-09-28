@@ -6,6 +6,7 @@ import { Suspense, useEffect, useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { ListSkeleton } from "@/components/ui/Skeleton";
+import { RequireAuth } from "@/components/auth/RequireAuth";
 import { ApiError, verifyPayment } from "@/lib/api";
 import { formatMoney } from "@/lib/format";
 
@@ -109,8 +110,10 @@ function VerifyBody() {
 
 export default function PaymentVerifyPage() {
   return (
-    <Suspense fallback={<ListSkeleton rows={2} />}>
-      <VerifyBody />
-    </Suspense>
+    <RequireAuth>
+      <Suspense fallback={<ListSkeleton rows={2} />}>
+        <VerifyBody />
+      </Suspense>
+    </RequireAuth>
   );
 }

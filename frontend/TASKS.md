@@ -49,6 +49,7 @@ src/app/(finance)/... src/components/ui/...  src/lib/api/...
 - [x] `/verification/[orderId]` — display-only 6-digit codes per delivery task, expiry, no-share copy.
 - [x] `/profile` (view/edit, shortcuts, logout), `/addresses` (localStorage CRUD + default).
 - [x] Shared: `RequireAuth` (+user context), `BackendProductCard`, `lib/addresses`, `listMyOrders`, `formatMoney`.
+- [x] Access model: browsing (home, discover, search, stores, products, cart, saved) is public for guests; login wall at checkout, orders, tracking, verification, profile, addresses, payment verify. Vendor/dispatch/admin/finance workspaces stay strictly role-fenced.
 
 ## Phase 3 — Vendor Operating System (done)
 
