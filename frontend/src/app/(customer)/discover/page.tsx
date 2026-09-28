@@ -13,6 +13,7 @@ import { BackendProductCard } from "@/components/customer/BackendProductCard";
 import {
   ApiError,
   getPublicStores,
+  getStoreProducts,
   searchProducts,
   type ProductResponse,
   type StoreResponse,
@@ -46,17 +47,27 @@ export default function DiscoverPage() {
     setLoading(true);
     setError("");
     try {
-      const [storeRes, productRes] = await Promise.all([
-        getPublicStores({ city: city.trim() || undefined, page: 1, size: 24 }),
-        query.trim()
-          ? searchProducts({ query: query.trim(), page: 1, size: 24 })
-          : Promise.resolve(null),
-      ]);
-      setStores(storeRes.stores);
+      const storeRes = await getPublicStores({ city: city.trim() || undefined, page: 1, size: 24 });
       const names: Record<string, string> = {};
       for (const s of storeRes.stores) names[s.id] = s.name;
+      setStores(storeRes.stores);
       setStoreNames(names);
-      setProducts(productRes ? productRes.products : null);
+      if (query.trim()) {
+        const productRes = await searchProducts({ query: query.trim(), page: 1, size: 24 });
+        setProducts(productRes.products);
+      } else {
+        // No search yet: show a browse feed aggregated across live stores.
+        const settled = await Promise.allSettled(
+          storeRes.stores
+            .slice(0, 6)
+            .map((s) => getStoreProducts(s.id, { page: 1, size: 3 }))
+        );
+        const feed: ProductResponse[] = [];
+        for (const r of settled) {
+          if (r.status === "fulfilled") feed.push(...r.value.products);
+        }
+        setProducts(feed.slice(0, 18));
+      }
       setStorePage(1);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "We couldn't load the marketplace.");
@@ -255,17 +266,23 @@ export default function DiscoverPage() {
           </section>
 
           <section aria-label="Products" className="mt-6">
-            <h2 className="text-base font-semibold text-stone-900">Products</h2>
+            <h2 className="text-base font-semibold text-stone-900">
+              {query.trim() ? `Results for "${query.trim()}"` : "Browse products"}
+            </h2>
             {visibleProducts === null ? (
               <p className="mt-3 rounded-xl border border-stone-200 bg-white p-4 text-sm text-stone-500">
-                Search for a product above to see results from every live store.
+                Loading products from live stores…
               </p>
             ) : visibleProducts.length === 0 ? (
               <div className="mt-3">
                 <EmptyState
                   icon="fa-cube"
                   title="No products found"
-                  description="Try different keywords or clear the in-stock filter."
+                  description={
+                    query.trim()
+                      ? "Try different keywords or clear the in-stock filter."
+                      : "Live stores have not published products yet. Check back soon."
+                  }
                 />
               </div>
             ) : (
