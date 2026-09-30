@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BadgeCheck, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { SectionHeading } from "./cards";
 import { StoreGridSkeleton } from "@/components/ui/Skeleton";
 import { useLiveMarketplace, type LiveStore } from "./useLiveMarketplace";
@@ -13,17 +13,30 @@ function LiveStoreCard({ s, index }: { s: LiveStore; index: number }) {
       data-aos-delay={(index % 3) * 90}
       className="group rounded-2xl border border-stone-200 bg-white overflow-hidden hover:shadow-[0_12px_32px_rgba(0,0,0,0.10)] hover:-translate-y-1 transition-all duration-300"
     >
-      <div className="h-28 bg-stone-100 text-stone-500 flex items-center justify-center">
-        <span className="w-12 h-12 rounded-2xl bg-forest-900 text-white text-xl font-bold flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-          {s.initial}
-        </span>
+      <div className="relative h-28 bg-stone-100 text-stone-500 flex items-center justify-center overflow-hidden">
+        {s.banner_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={s.banner_url} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+        ) : null}
+        {s.logo_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={s.logo_url}
+            alt={`${s.name} logo`}
+            loading="lazy"
+            className="relative w-12 h-12 rounded-2xl object-cover border border-white/60 shadow-sm group-hover:scale-110 transition-transform duration-300"
+          />
+        ) : (
+          <span className="relative w-12 h-12 rounded-2xl bg-forest-900 text-white text-xl font-bold flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            {s.initial}
+          </span>
+        )}
       </div>
       <div className="p-4 sm:p-5">
         <div className="flex items-center gap-2.5">
           <div className="min-w-0">
             <h3 className="flex items-center gap-1.5 text-sm font-semibold text-stone-900">
               <span className="truncate">{s.name}</span>
-              <BadgeCheck className="w-4 h-4 text-forest-700 shrink-0" aria-label="Verified store" />
             </h3>
             <p className="text-xs text-stone-500">{s.city} · Live now</p>
           </div>

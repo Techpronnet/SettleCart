@@ -67,31 +67,40 @@ export function WhySettleCart() {
           ))}
         </ol>
 
-        <div className="mt-8 grid gap-3 sm:gap-4 lg:grid-cols-3">
-          {LANES.map((lane, i) => (
+        <div className="mt-8 grid gap-3 sm:gap-4 lg:grid-cols-[1fr_1.15fr_1fr] lg:items-start">
+          {LANES.map((lane, i) => {
+            const featured = i === 1;
+            return (
             <article
               key={lane.stage}
               data-aos="fade-up"
               data-aos-delay={i * 90}
-              className="rounded-2xl border border-sand-border bg-cream p-5 sm:p-6"
+              className={
+                featured
+                  ? "rounded-3xl border border-forest-900 bg-forest-900 text-white p-6 sm:p-8 shadow-xl lg:mt-0"
+                  : i === 0
+                    ? "rounded-2xl border border-sand-border bg-cream p-5 sm:p-6 lg:mt-6"
+                    : "rounded-[1.75rem] border border-sand-border bg-sand p-5 sm:p-6 lg:mt-12"
+              }
             >
-              <p className="text-[11px] font-mono uppercase tracking-wider text-brand-700">{lane.stage}</p>
-              <h3 id={i === 0 ? "why-heading" : undefined} className="mt-1 text-base font-semibold text-stone-900">{lane.title}</h3>
+              <p className={`text-[11px] font-mono uppercase tracking-wider ${featured ? "text-brand-500" : "text-brand-700"}`}>{lane.stage}</p>
+              <h3 id={i === 0 ? "why-heading" : undefined} className={`mt-1 font-semibold ${featured ? "text-lg text-white" : "text-base text-stone-900"}`}>{lane.title}</h3>
               <ul className="mt-4 space-y-4">
                 {lane.features.map((f) => (
                   <li key={f.title} className="flex items-start gap-3">
-                    <span className="w-9 h-9 rounded-xl bg-forest-900 text-white flex items-center justify-center shrink-0">
+                    <span className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${featured ? "bg-white/10 text-brand-500" : "bg-forest-900 text-white"}`}>
                       <f.icon className="w-4 h-4" />
                     </span>
                     <span>
-                      <span className="block text-sm font-semibold text-stone-900">{f.title}</span>
-                      <span className="block mt-0.5 text-[13px] text-stone-600 leading-relaxed">{f.text}</span>
+                      <span className={`block text-sm font-semibold ${featured ? "text-white" : "text-stone-900"}`}>{f.title}</span>
+                      <span className={`block mt-0.5 text-[13px] leading-relaxed ${featured ? "text-forest-100" : "text-stone-600"}`}>{f.text}</span>
                     </span>
                   </li>
                 ))}
               </ul>
             </article>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

@@ -155,9 +155,6 @@ export function StorefrontView({
               {store.description || "An independent business selling on SettleCart."}
             </p>
             {store.address && <p className="mt-1 text-xs text-stone-500">{store.address}</p>}
-            <p className="mt-1.5 inline-flex items-center gap-1 text-xs font-medium text-teal-800">
-              <i className="fa fa-check-circle" aria-hidden="true" /> Verified store
-            </p>
           </div>
         </div>
       </Card>

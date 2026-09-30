@@ -10,6 +10,8 @@ export interface LiveStore {
   name: string;
   city: string;
   initial: string;
+  logo_url?: string | null;
+  banner_url?: string | null;
 }
 
 interface CachedMarketplaceData {
@@ -36,6 +38,8 @@ async function executeMarketplaceFetch(): Promise<CachedMarketplaceData> {
           name: s.name,
           city: [s.city, s.state].filter(Boolean).join(", ") || "Online",
           initial: s.name.charAt(0).toUpperCase(),
+          logo_url: s.logo_url ?? null,
+          banner_url: s.banner_url ?? null,
         };
       });
 
@@ -78,6 +82,8 @@ async function executeMarketplaceFetch(): Promise<CachedMarketplaceData> {
     name: s.name,
     city: [s.city, s.state].filter(Boolean).join(", ") || "Online",
     initial: s.name.charAt(0).toUpperCase(),
+    logo_url: s.logo_url ?? null,
+    banner_url: s.banner_url ?? null,
   }));
 
   const settled = await Promise.allSettled(

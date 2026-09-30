@@ -190,7 +190,7 @@ function StoreBody() {
         <div className="space-y-5">
           <div>
             <p className="text-sm font-medium text-stone-900">Cover image</p>
-            <p className="mt-0.5 text-xs text-stone-500">Shown at the top of your storefront. JPG or PNG, under 5MB.</p>
+            <p className="mt-0.5 text-xs text-stone-500">Recommended size: 1200 × 400px. JPG or PNG, under 5MB. Shown at the top of your storefront.</p>
             <div className="mt-2.5 overflow-hidden rounded-xl border border-stone-200 bg-stone-100">
               {store.banner_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -226,7 +226,7 @@ function StoreBody() {
 
           <div>
             <p className="text-sm font-medium text-stone-900">Logo</p>
-            <p className="mt-0.5 text-xs text-stone-500">Square JPG or PNG works best. Shown next to your store name.</p>
+            <p className="mt-0.5 text-xs text-stone-500">Recommended size: 400 × 400px. Square JPG or PNG. Shown next to your store name.</p>
             <div className="mt-2.5 flex items-center gap-3">
               {store.logo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
