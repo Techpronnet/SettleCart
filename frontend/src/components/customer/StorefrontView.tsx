@@ -127,11 +127,29 @@ export function StorefrontView({
         breadcrumbs={[{ label: homeLabel, href: homeHref }, { label: store.name }]}
       />
 
+      {store.banner_url && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={store.banner_url}
+          alt={`${store.name} cover`}
+          className="mb-4 h-36 sm:h-48 w-full rounded-2xl border border-stone-200 object-cover"
+        />
+      )}
+
       <Card title="About this store">
         <div className="flex items-start gap-3">
-          <span className="w-12 h-12 rounded-xl bg-stone-900 text-white text-lg font-bold flex items-center justify-center shrink-0">
-            {store.name.charAt(0).toUpperCase()}
-          </span>
+          {store.logo_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={store.logo_url}
+              alt={`${store.name} logo`}
+              className="w-12 h-12 rounded-xl object-cover border border-stone-200 shrink-0"
+            />
+          ) : (
+            <span className="w-12 h-12 rounded-xl bg-stone-900 text-white text-lg font-bold flex items-center justify-center shrink-0">
+              {store.name.charAt(0).toUpperCase()}
+            </span>
+          )}
           <div className="min-w-0">
             <p className="text-sm text-stone-600 leading-relaxed">
               {store.description || "An independent business selling on SettleCart."}

@@ -160,6 +160,54 @@ export async function unpublishStore(storeId: string): Promise<StoreResponse> {
   return data;
 }
 
+async function uploadStoreAsset(
+  storeId: string,
+  kind: 'logo' | 'banner',
+  file: File
+): Promise<StoreResponse> {
+  const token = authStorage.getToken();
+  const form = new FormData();
+  form.append('file', file);
+
+  let res: Response;
+  try {
+    res = await fetch(`${getBaseUrl()}/api/v1/media/upload/store/${storeId}/${kind}`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: form,
+    });
+  } catch {
+    throw new ApiError(0, 'network_error', 'Could not reach the server. Check your connection and try again.');
+  }
+
+  if (!res.ok) {
+    let message = `Store ${kind} upload failed (${res.status}).`;
+    try {
+      const body = await res.json();
+      if (body?.error?.message) message = body.error.message;
+    } catch {
+      // keep default
+    }
+    throw new ApiError(res.status, res.status === 401 ? 'unauthorized' : 'upload_failed', message);
+  }
+
+  return (await res.json()) as StoreResponse;
+}
+
+/**
+ * Uploads a store logo (400x400) and updates the storefront.
+ */
+export async function uploadStoreLogo(storeId: string, file: File): Promise<StoreResponse> {
+  return uploadStoreAsset(storeId, 'logo', file);
+}
+
+/**
+ * Uploads a storefront cover/banner (1200x400) and updates the storefront.
+ */
+export async function uploadStoreBanner(storeId: string, file: File): Promise<StoreResponse> {
+  return uploadStoreAsset(storeId, 'banner', file);
+}
+
 // Catalogue management
 
 export async function createCategory(
@@ -322,6 +370,8 @@ export const vendor = {
   updateStore,
   publishStore,
   unpublishStore,
+  uploadStoreLogo,
+  uploadStoreBanner,
   createCategory,
   updateCategory,
   deleteCategory,

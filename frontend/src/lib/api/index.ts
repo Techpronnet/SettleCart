@@ -188,6 +188,8 @@ export {
   listMyWithdrawals,
   uploadKycDocument,
   uploadProductImage,
+  uploadStoreLogo,
+  uploadStoreBanner,
   type KycDocumentType,
   type KycUploadResult,
 } from './domains/vendor';

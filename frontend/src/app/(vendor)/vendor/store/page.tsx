@@ -18,6 +18,8 @@ import {
   publishStore,
   unpublishStore,
   updateStore,
+  uploadStoreBanner,
+  uploadStoreLogo,
   type StoreResponse,
 } from "@/lib/api";
 import { getVendorContext, setVendorStore } from "@/lib/vendor-context";
@@ -36,6 +38,8 @@ function StoreBody() {
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
   const [toggling, setToggling] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingBanner, setUploadingBanner] = useState(false);
   const [origin, setOrigin] = useState("");
   const [seeded, setSeeded] = useState<string | null>(null);
 
@@ -93,6 +97,32 @@ function StoreBody() {
       setMessage(err instanceof ApiError ? friendlyApiMessage(err, "Could not save.") : "Network error.");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function onAssetUpload(kind: "logo" | "banner", file: File | undefined) {
+    if (!store || !file) return;
+    if (!file.type.startsWith("image/")) {
+      setMessage("Please choose a JPG or PNG image.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage("Image must be under 5MB.");
+      return;
+    }
+    setMessage("");
+    if (kind === "logo") setUploadingLogo(true);
+    else setUploadingBanner(true);
+    try {
+      const updated =
+        kind === "logo" ? await uploadStoreLogo(store.id, file) : await uploadStoreBanner(store.id, file);
+      setStore(updated);
+      setMessage(kind === "logo" ? "Logo updated." : "Cover image updated.");
+    } catch (err) {
+      setMessage(err instanceof ApiError ? friendlyApiMessage(err, "Upload failed.") : "Network error.");
+    } finally {
+      if (kind === "logo") setUploadingLogo(false);
+      else setUploadingBanner(false);
     }
   }
 
@@ -154,6 +184,82 @@ function StoreBody() {
             Public link: {origin}/stores/{store.id}
           </p>
         )}
+      </Card>
+
+      <Card title="Store branding">
+        <div className="space-y-5">
+          <div>
+            <p className="text-sm font-medium text-stone-900">Cover image</p>
+            <p className="mt-0.5 text-xs text-stone-500">Shown at the top of your storefront. JPG or PNG, under 5MB.</p>
+            <div className="mt-2.5 overflow-hidden rounded-xl border border-stone-200 bg-stone-100">
+              {store.banner_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={store.banner_url} alt={`${store.name} cover`} className="h-32 sm:h-40 w-full object-cover" />
+              ) : (
+                <div className="flex h-32 sm:h-40 items-center justify-center text-stone-400">
+                  <i className="fa fa-image text-2xl" aria-hidden="true" />
+                </div>
+              )}
+            </div>
+            <label className="mt-2.5 inline-flex cursor-pointer items-center justify-center px-4 py-2.5 rounded-md text-sm font-medium border border-stone-300 text-stone-900 hover:bg-stone-100 min-h-[40px]">
+              <input
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                disabled={uploadingBanner}
+                onChange={(e) => {
+                  onAssetUpload("banner", e.target.files?.[0]);
+                  e.target.value = "";
+                }}
+              />
+              {uploadingBanner ? (
+                <span className="inline-flex items-center gap-2">
+                  <i className="fa fa-spinner fa-spin" aria-hidden="true" /> Uploading…
+                </span>
+              ) : store.banner_url ? (
+                "Change cover"
+              ) : (
+                "Upload cover"
+              )}
+            </label>
+          </div>
+
+          <div>
+            <p className="text-sm font-medium text-stone-900">Logo</p>
+            <p className="mt-0.5 text-xs text-stone-500">Square JPG or PNG works best. Shown next to your store name.</p>
+            <div className="mt-2.5 flex items-center gap-3">
+              {store.logo_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={store.logo_url} alt={`${store.name} logo`} className="w-16 h-16 rounded-xl object-cover border border-stone-200" />
+              ) : (
+                <span className="w-16 h-16 rounded-xl bg-stone-900 text-white text-xl font-bold flex items-center justify-center shrink-0">
+                  {store.name.charAt(0).toUpperCase()}
+                </span>
+              )}
+              <label className="inline-flex cursor-pointer items-center justify-center px-4 py-2.5 rounded-md text-sm font-medium border border-stone-300 text-stone-900 hover:bg-stone-100 min-h-[40px]">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="sr-only"
+                  disabled={uploadingLogo}
+                  onChange={(e) => {
+                    onAssetUpload("logo", e.target.files?.[0]);
+                    e.target.value = "";
+                  }}
+                />
+                {uploadingLogo ? (
+                  <span className="inline-flex items-center gap-2">
+                    <i className="fa fa-spinner fa-spin" aria-hidden="true" /> Uploading…
+                  </span>
+                ) : store.logo_url ? (
+                  "Change logo"
+                ) : (
+                  "Upload logo"
+                )}
+              </label>
+            </div>
+          </div>
+        </div>
       </Card>
 
       <Card title="Store details">
