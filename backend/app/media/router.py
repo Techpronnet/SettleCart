@@ -20,6 +20,7 @@ from app.media.schemas import (
     SignedUrlResponse,
 )
 from app.media.service import MediaService
+from app.core.cache import CacheService
 from app.stores.schemas import StoreResponse
 from app.catalogue.schemas import ProductResponse
 
@@ -96,6 +97,8 @@ async def upload_store_logo(
     store.logo_url = upload_res["secure_url"]
     await db.commit()
     await db.refresh(store)
+    await CacheService.invalidate("stores")
+    await CacheService.invalidate("showcase")
     return store
 
 
@@ -116,6 +119,8 @@ async def upload_store_banner(
     store.banner_url = upload_res["secure_url"]
     await db.commit()
     await db.refresh(store)
+    await CacheService.invalidate("stores")
+    await CacheService.invalidate("showcase")
     return store
 
 
