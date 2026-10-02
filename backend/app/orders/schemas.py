@@ -72,3 +72,11 @@ class UpdateOrderStatusRequest(BaseModel):
 
 class UpdateVendorOrderStatusRequest(BaseModel):
     status: VendorOrderStatus
+
+class DisputeOrderRequest(BaseModel):
+    reason: str = Field(..., min_length=2, max_length=100)
+    details: str = Field(..., min_length=5, max_length=2000)
+
+class ResolveDisputeRequest(BaseModel):
+    action: str = Field(..., description="'refund' or 'dismiss'")
+    resolution_notes: Optional[str] = None

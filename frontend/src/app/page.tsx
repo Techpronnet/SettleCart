@@ -1,12 +1,14 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/landing/Hero";
-import { Discovery } from "@/components/landing/Discovery";
+import { FeaturedCategories } from "@/components/market/FeaturedCategories";
+import { PromoBanners } from "@/components/market/PromoBanners";
+import { FeaturedProducts } from "@/components/market/MarketHero";
+import { DealCountdown, DealsOfDay } from "@/components/market/DealCountdown";
 import { MultiStore } from "@/components/landing/MultiStore";
 import { Lifecycle } from "@/components/landing/Lifecycle";
 import { WhySettleCart } from "@/components/landing/WhySettleCart";
 import { FeaturedStores } from "@/components/landing/FeaturedStores";
-import { PopularProducts } from "@/components/landing/PopularProducts";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { VendorCTA } from "@/components/landing/VendorCTA";
 import { Trust } from "@/components/landing/Trust";
@@ -19,12 +21,15 @@ export default function Home() {
       <Navbar />
       <main className="flex-1">
         <Hero />
-        <Discovery />
+        <FeaturedCategories />
+        <PromoBanners />
+        <FeaturedProducts />
         <MultiStore />
         <Lifecycle />
         <WhySettleCart />
         <FeaturedStores />
-        <PopularProducts />
+        <DealCountdown />
+        <DealsOfDay />
         <HowItWorks />
         <VendorCTA />
         <Trust />

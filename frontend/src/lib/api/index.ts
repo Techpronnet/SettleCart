@@ -61,6 +61,12 @@ export {
   type WithdrawalResponse,
   type WithdrawalReviewRequest,
   type CreateWithdrawalRequest,
+  type AdminWithdrawalResponse,
+  type WithdrawalListResponse,
+  type AdminLedgerEntryResponse,
+  type AdminLedgerListResponse,
+  type DisputeOrderRequest,
+  type ResolveDisputeRequest,
   type BusinessResponse,
   type BusinessCreateRequest,
   type BusinessUpdateRequest,
@@ -143,6 +149,7 @@ export {
   listMyOrders,
   initializePayment,
   verifyPayment,
+  disputeOrder,
 } from './domains/orders';
 
 // Dispatch & Operations Domain Module
@@ -231,11 +238,15 @@ export {
   assignRider,
   settleVendorOrder,
   reviewWithdrawal,
+  listAdminWithdrawals,
+  resolveDispute,
+  listAdminLedger,
   getOrderPayments,
   getAnyOrder,
   type PendingKycResponse,
   type AdminBusinessListResponse,
   type AdminStoreListResponse,
+  type AdminLedgerFilterParams,
 } from './domains/admin';
 import { authStorage } from './auth-storage';
 import { api, client, clearApiCache } from './client';

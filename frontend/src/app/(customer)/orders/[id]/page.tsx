@@ -231,7 +231,15 @@ function OrderBody({ id }: { id: string }) {
             />
           )}
 
-        <OrderDisputeCard orderId={order.id} orderNumber={order.order_number} />
+        <OrderDisputeCard
+          orderId={order.id}
+          orderNumber={order.order_number}
+          currentStatus={order.status}
+          orderNotes={order.notes}
+          onDisputed={() => {
+            getOrder(id).then(setOrder).catch(() => {});
+          }}
+        />
       </div>
     </div>
   );

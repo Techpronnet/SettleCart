@@ -80,9 +80,20 @@ export function Hero() {
     <section aria-labelledby="hero-heading" className="relative overflow-hidden bg-forest-900 text-white">
       <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_0%,rgba(249,106,27,0.16),transparent)]" />
       <div className="site-container relative grid gap-10 lg:gap-6 lg:grid-cols-2 items-center py-12 sm:py-16 lg:py-24">
-        <div data-aos="fade-up">
+        <div data-aos="fade-up" className="relative">
+          <div aria-hidden="true" className="pointer-events-none absolute -inset-10 overflow-visible">
+            <span className="absolute -left-24 -top-10 w-72 h-72 rounded-full bg-brand-600/25 blur-3xl animate-float" />
+            <span className="absolute -bottom-16 right-0 w-80 h-80 rounded-full bg-forest-700/60 blur-3xl animate-float [animation-delay:1.6s]" />
+          </div>
+          <div className="relative">
           <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-[3.4rem] font-bold tracking-tight leading-[1.05] text-balance">
-            Shop More. <span className="text-brand-500">Save More!</span>
+            Shop More.{" "}
+            <span className="relative inline-block text-brand-500">
+              Save More!
+              <svg viewBox="0 0 220 12" preserveAspectRatio="none" aria-hidden="true" className="absolute -bottom-1.5 left-0 h-2.5 w-full text-brand-600">
+                <path d="M3 9 C 60 3, 160 3, 217 8" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
+              </svg>
+            </span>
           </h1>
           <p className="mt-5 text-base sm:text-lg text-forest-100 leading-relaxed max-w-xl">
             Discover amazing deals on your favorite products. Explore stores,
@@ -108,6 +119,7 @@ export function Hero() {
             <Truck className="w-4 h-4 text-brand-500" />
             Verified stores. Tracked delivery.
           </p>
+          </div>
         </div>
 
         <div className="relative" aria-label="Products from different stores on SettleCart">

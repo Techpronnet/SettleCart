@@ -30,6 +30,9 @@ import {
   type UserResponse,
   type WithdrawalResponse,
   type WithdrawalReviewRequest,
+  type WithdrawalListResponse,
+  type AdminLedgerListResponse,
+  type ResolveDisputeRequest,
 } from '../types';
 
 export async function getDashboardStats(): Promise<DashboardStats> {
@@ -217,6 +220,62 @@ export async function getAnyOrder(orderId: string): Promise<OrderResponse> {
   return data;
 }
 
+export async function listAdminWithdrawals(
+  status?: string,
+  page = 1,
+  size = 20
+): Promise<WithdrawalListResponse> {
+  const query: Record<string, string | number> = { page, size };
+  if (status && status !== 'all') query.status = status;
+  const { data } = await (client.GET as any)('/api/v1/admin/withdrawals', {
+    params: { query },
+  });
+  if (!data) throw new ApiError(500, 'internal_error', 'Failed to retrieve withdrawals queue');
+  return data as WithdrawalListResponse;
+}
+
+export async function resolveDispute(
+  orderId: string,
+  action: 'refund' | 'dismiss',
+  resolutionNotes?: string | null
+): Promise<OrderResponse> {
+  const body: ResolveDisputeRequest = { action, resolution_notes: resolutionNotes ?? null };
+  const { data } = await (client.POST as any)('/api/v1/admin/orders/{order_id}/dispute/resolve', {
+    params: { path: { order_id: orderId } },
+    body,
+  });
+  if (!data) throw new ApiError(500, 'internal_error', 'Dispute resolution failed');
+  return data as OrderResponse;
+}
+
+export interface AdminLedgerFilterParams {
+  category?: string;
+  entry_type?: string;
+  balance_type?: string;
+  search?: string;
+  page?: number;
+  size?: number;
+}
+
+export async function listAdminLedger(
+  params: AdminLedgerFilterParams = {}
+): Promise<AdminLedgerListResponse> {
+  const query: Record<string, string | number> = {
+    page: params.page ?? 1,
+    size: params.size ?? 20,
+  };
+  if (params.category && params.category !== 'all') query.category = params.category;
+  if (params.entry_type && params.entry_type !== 'all') query.entry_type = params.entry_type;
+  if (params.balance_type && params.balance_type !== 'all') query.balance_type = params.balance_type;
+  if (params.search?.trim()) query.search = params.search.trim();
+
+  const { data } = await (client.GET as any)('/api/v1/admin/ledger', {
+    params: { query },
+  });
+  if (!data) throw new ApiError(500, 'internal_error', 'Failed to retrieve ledger entries');
+  return data as AdminLedgerListResponse;
+}
+
 export const admin = {
   getDashboardStats,
   listPendingKyc,
@@ -233,6 +292,9 @@ export const admin = {
   assignRider,
   settleVendorOrder,
   reviewWithdrawal,
+  listAdminWithdrawals,
+  resolveDispute,
+  listAdminLedger,
   getOrderPayments,
   getAnyOrder,
 };

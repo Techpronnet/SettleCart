@@ -5,11 +5,15 @@ from typing import List, Optional
 from app.core.database import get_db
 from app.core.dependencies import require_role
 from app.models.user import User
-from app.models.enums import UserRole, OrderStatus
+from uuid import UUID
+from app.models.enums import UserRole, OrderStatus, WithdrawalStatus, LedgerCategory, LedgerEntryType, BalanceType
 from app.admin.schemas import DashboardStats, KYCReviewRequest, KYCReviewResponse, AdminCreateUserRequest
 from app.admin.service import AdminService
-from app.orders.schemas import OrderListResponse
+from app.orders.schemas import OrderListResponse, OrderResponse, ResolveDisputeRequest
+from app.orders.service import OrderService
 from app.users.schemas import UserResponse
+from app.wallets.schemas import WithdrawalListResponse, AdminLedgerListResponse
+from app.wallets.service import WalletService
 from app.core.config import settings
 
 router = APIRouter(tags=["admin"])
@@ -118,3 +122,60 @@ async def list_stores(
     total = await db.scalar(count_stmt)
     result = await db.execute(stmt)
     return {"stores": result.scalars().all(), "total": total, "page": page, "size": size}
+
+@router.get("/withdrawals", response_model=WithdrawalListResponse)
+async def list_admin_withdrawals(
+    status: Optional[WithdrawalStatus] = None,
+    page: int = Query(1, ge=1),
+    size: int = Query(20, ge=1, le=100),
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(require_role(UserRole.ADMIN, UserRole.FINANCE)),
+):
+    """
+    Platform-wide withdrawal requests queue for Admin & Finance operators.
+    Enables reviewing, filtering, and approving/rejecting merchant and rider payout requests.
+    """
+    withdrawals, total = await WalletService.list_all_withdrawals(
+        db, status=status, page=page, size=size
+    )
+    return WithdrawalListResponse(withdrawals=withdrawals, total=total, page=page, size=size)
+
+@router.post("/orders/{order_id}/dispute/resolve", response_model=OrderResponse)
+async def resolve_order_dispute(
+    order_id: UUID,
+    data: ResolveDisputeRequest,
+    db: AsyncSession = Depends(get_db),
+    admin_user: User = Depends(require_role(UserRole.ADMIN)),
+):
+    """
+    Administrative dispute mediation:
+    - 'refund': Marks order REFUNDED and vendor orders CANCELLED.
+    - 'dismiss': Restores order to DELIVERED so settlement can proceed.
+    """
+    return await OrderService.resolve_dispute(db, order_id=order_id, admin_user=admin_user, data=data)
+
+@router.get("/ledger", response_model=AdminLedgerListResponse)
+async def list_admin_ledger(
+    category: Optional[LedgerCategory] = None,
+    entry_type: Optional[LedgerEntryType] = None,
+    balance_type: Optional[BalanceType] = None,
+    search: Optional[str] = None,
+    page: int = Query(1, ge=1),
+    size: int = Query(20, ge=1, le=100),
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(require_role(UserRole.ADMIN, UserRole.FINANCE)),
+):
+    """
+    Platform-wide immutable financial ledger explorer for Admin and Finance operators.
+    Provides audit trail of all credits, debits, settlements, withdrawals, and fee collections.
+    """
+    entries, total = await WalletService.list_all_ledger_entries(
+        db,
+        category=category,
+        entry_type=entry_type,
+        balance_type=balance_type,
+        search=search,
+        page=page,
+        size=size,
+    )
+    return AdminLedgerListResponse(entries=entries, total=total, page=page, size=size)

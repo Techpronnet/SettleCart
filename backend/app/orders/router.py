@@ -13,7 +13,7 @@ from app.models.store import Store
 from app.models.business import Business
 from app.orders.schemas import (
     CreateOrderRequest, OrderResponse, OrderListResponse, VendorOrderResponse,
-    UpdateOrderStatusRequest, UpdateVendorOrderStatusRequest
+    UpdateOrderStatusRequest, UpdateVendorOrderStatusRequest, DisputeOrderRequest
 )
 from app.orders.service import OrderService
 
@@ -92,6 +92,19 @@ async def update_order_status(
 ):
     order = await OrderService.get_order(db, order_id)
     return await OrderService.update_order_status(db, order, data.status)
+
+@router.post("/{order_id}/dispute", response_model=OrderResponse)
+async def dispute_order(
+    order_id: UUID,
+    data: DisputeOrderRequest,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    """
+    Submits an official customer order dispute (e.g. wrong item, missing goods, delivery failure).
+    Transitions the order to DISPUTED status and broadcasts real-time telemetry.
+    """
+    return await OrderService.dispute_order(db, order_id=order_id, user=user, data=data)
 
 @router.get("/vendor/{store_id}", response_model=List[VendorOrderResponse])
 async def list_vendor_orders(

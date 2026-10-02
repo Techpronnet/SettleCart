@@ -370,3 +370,141 @@ class WalletService:
         res = await db.execute(stmt)
         return list(res.scalars().all()), total
 
+    @staticmethod
+    async def list_all_withdrawals(
+        db: AsyncSession,
+        status: Optional[WithdrawalStatus] = None,
+        page: int = 1,
+        size: int = 20,
+    ) -> Tuple[List[dict], int]:
+        """
+        Lists platform-wide withdrawal requests with associated user information.
+        Used by Admin and Finance operators to inspect and process payouts.
+        """
+        stmt = (
+            select(WithdrawalRequest, User)
+            .join(Wallet, WithdrawalRequest.wallet_id == Wallet.id)
+            .join(User, Wallet.user_id == User.id)
+        )
+        count_stmt = (
+            select(func.count())
+            .select_from(WithdrawalRequest)
+            .join(Wallet, WithdrawalRequest.wallet_id == Wallet.id)
+            .join(User, Wallet.user_id == User.id)
+        )
+
+        if status:
+            stmt = stmt.where(WithdrawalRequest.status == status)
+            count_stmt = count_stmt.where(WithdrawalRequest.status == status)
+
+        total = await db.scalar(count_stmt) or 0
+        offset = (page - 1) * size
+        stmt = stmt.order_by(WithdrawalRequest.created_at.desc()).offset(offset).limit(size)
+        res = await db.execute(stmt)
+        rows = res.all()
+
+        items = []
+        for wd, u in rows:
+            items.append({
+                "id": wd.id,
+                "wallet_id": wd.wallet_id,
+                "user_id": u.id,
+                "user_email": u.email,
+                "user_name": u.full_name,
+                "user_role": u.role.value if hasattr(u.role, "value") else str(u.role),
+                "amount": wd.amount,
+                "bank_name": wd.bank_name,
+                "account_number": wd.account_number,
+                "account_name": wd.account_name,
+                "bank_code": wd.bank_code,
+                "status": wd.status,
+                "reference": wd.reference,
+                "rejection_reason": wd.rejection_reason,
+                "reviewed_by": wd.reviewed_by,
+                "reviewed_at": wd.reviewed_at,
+                "created_at": wd.created_at,
+                "updated_at": wd.updated_at,
+            })
+        return items, total
+
+    @staticmethod
+    async def list_all_ledger_entries(
+        db: AsyncSession,
+        category: Optional[LedgerCategory] = None,
+        entry_type: Optional[LedgerEntryType] = None,
+        balance_type: Optional[BalanceType] = None,
+        search: Optional[str] = None,
+        page: int = 1,
+        size: int = 20,
+    ) -> Tuple[List[dict], int]:
+        """
+        Retrieves platform-wide immutable financial ledger entries with associated user details.
+        Supports filtering by category, entry type, balance type, and search keyword.
+        """
+        stmt = (
+            select(LedgerEntry, User)
+            .join(Wallet, LedgerEntry.wallet_id == Wallet.id)
+            .join(User, Wallet.user_id == User.id)
+        )
+        count_stmt = (
+            select(func.count())
+            .select_from(LedgerEntry)
+            .join(Wallet, LedgerEntry.wallet_id == Wallet.id)
+            .join(User, Wallet.user_id == User.id)
+        )
+
+        if category:
+            stmt = stmt.where(LedgerEntry.category == category)
+            count_stmt = count_stmt.where(LedgerEntry.category == category)
+
+        if entry_type:
+            stmt = stmt.where(LedgerEntry.entry_type == entry_type)
+            count_stmt = count_stmt.where(LedgerEntry.entry_type == entry_type)
+
+        if balance_type:
+            stmt = stmt.where(LedgerEntry.balance_type == balance_type)
+            count_stmt = count_stmt.where(LedgerEntry.balance_type == balance_type)
+
+        if search:
+            s = f"%{search.strip()}%"
+            stmt = stmt.where(
+                (LedgerEntry.reference.ilike(s)) |
+                (LedgerEntry.description.ilike(s)) |
+                (User.email.ilike(s)) |
+                (User.full_name.ilike(s))
+            )
+            count_stmt = count_stmt.where(
+                (LedgerEntry.reference.ilike(s)) |
+                (LedgerEntry.description.ilike(s)) |
+                (User.email.ilike(s)) |
+                (User.full_name.ilike(s))
+            )
+
+        total = await db.scalar(count_stmt) or 0
+        offset = (page - 1) * size
+        stmt = stmt.order_by(LedgerEntry.created_at.desc()).offset(offset).limit(size)
+        res = await db.execute(stmt)
+        rows = res.all()
+
+        items = []
+        for entry, u in rows:
+            items.append({
+                "id": entry.id,
+                "wallet_id": entry.wallet_id,
+                "user_id": u.id,
+                "user_email": u.email,
+                "user_name": u.full_name,
+                "user_role": u.role.value if hasattr(u.role, "value") else str(u.role),
+                "order_id": entry.order_id,
+                "vendor_order_id": entry.vendor_order_id,
+                "delivery_task_id": entry.delivery_task_id,
+                "entry_type": entry.entry_type,
+                "category": entry.category,
+                "amount": entry.amount,
+                "balance_type": entry.balance_type,
+                "description": entry.description,
+                "reference": entry.reference,
+                "created_at": entry.created_at,
+            })
+        return items, total
+

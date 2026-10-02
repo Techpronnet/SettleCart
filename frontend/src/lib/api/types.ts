@@ -172,6 +172,70 @@ export type WithdrawalResponse = Schema['WithdrawalResponse'];
 export type WithdrawalReviewRequest = Schema['WithdrawalReviewRequest'];
 export type CreateWithdrawalRequest = Schema['CreateWithdrawalRequest'];
 
+export interface AdminWithdrawalResponse {
+  id: string;
+  wallet_id: string;
+  user_id: string;
+  user_email: string;
+  user_name: string;
+  user_role: string;
+  amount: number | string;
+  bank_name: string;
+  account_number: string;
+  account_name: string;
+  bank_code?: string | null;
+  status: string;
+  reference: string;
+  rejection_reason?: string | null;
+  reviewed_by?: string | null;
+  reviewed_at?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WithdrawalListResponse {
+  withdrawals: AdminWithdrawalResponse[];
+  total: number;
+  page: number;
+  size: number;
+}
+
+export interface AdminLedgerEntryResponse {
+  id: string;
+  wallet_id: string;
+  user_id: string;
+  user_email: string;
+  user_name: string;
+  user_role: string;
+  order_id?: string | null;
+  vendor_order_id?: string | null;
+  delivery_task_id?: string | null;
+  entry_type: 'credit' | 'debit';
+  category: string;
+  amount: number | string;
+  balance_type: 'available' | 'pending';
+  description: string;
+  reference: string;
+  created_at: string;
+}
+
+export interface AdminLedgerListResponse {
+  entries: AdminLedgerEntryResponse[];
+  total: number;
+  page: number;
+  size: number;
+}
+
+export interface DisputeOrderRequest {
+  reason: string;
+  details: string;
+}
+
+export interface ResolveDisputeRequest {
+  action: 'refund' | 'dismiss';
+  resolution_notes?: string | null;
+}
+
 // Dispatch & Operations
 export type DeliveryTaskResponse = Schema['DeliveryTaskResponse'];
 export type DeliveryTaskDetailResponse = Schema['DeliveryTaskDetailResponse'];

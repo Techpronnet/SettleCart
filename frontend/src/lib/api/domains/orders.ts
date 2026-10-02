@@ -14,6 +14,7 @@ import {
   type OrderListResponse,
   type OrderResponse,
   type PaymentTransactionResponse,
+  type DisputeOrderRequest,
 } from '../types';
 
 /**
@@ -109,12 +110,39 @@ export async function listMyOrders(page = 1, size = 20): Promise<OrderListRespon
   return data;
 }
 
+/**
+  * Submits an official customer dispute for an order.
+  * Transitions order to DISPUTED status on backend and broadcasts update.
+  */
+export async function disputeOrder(
+  orderId: string,
+  reason: string,
+  details: string
+): Promise<OrderResponse> {
+  const body: DisputeOrderRequest = { reason, details };
+  const { data } = await (client.POST as any)('/api/v1/orders/{order_id}/dispute', {
+    params: {
+      path: {
+        order_id: orderId,
+      },
+    },
+    body,
+  });
+
+  if (!data) {
+    throw new ApiError(500, 'internal_error', 'Failed to lodge dispute');
+  }
+
+  return data as OrderResponse;
+}
+
 export const orders = {
   createOrder,
   getOrder,
   listMyOrders,
   initializePayment,
   verifyPayment,
+  disputeOrder,
 };
 
 export default orders;

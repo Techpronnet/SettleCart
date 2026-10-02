@@ -13,6 +13,7 @@ import {
   friendlyApiMessage,
   getAnyOrder,
   getOrderPayments,
+  resolveDispute,
   settleVendorOrder,
   type OrderResponse,
   type PaymentTransactionResponse,
@@ -27,6 +28,8 @@ function OrderDetailsBody({ orderId }: { orderId: string }) {
   const [error, setError] = useState("");
   const [actionError, setActionError] = useState("");
   const [settling, setSettling] = useState<string | null>(null);
+  const [disputeNotes, setDisputeNotes] = useState("");
+  const [resolving, setResolving] = useState<"refund" | "dismiss" | null>(null);
 
   async function load() {
     setError("");
@@ -83,6 +86,82 @@ function OrderDetailsBody({ orderId }: { orderId: string }) {
         <p role="alert" className="text-xs text-red-700">
           {actionError}
         </p>
+      )}
+
+      {order.status.toLowerCase() === "disputed" && (
+        <Card title="Order Dispute Mediation">
+          <div className="space-y-3">
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-stone-800">
+              <div className="flex items-center gap-1.5 font-semibold text-amber-900 mb-1">
+                <i className="fa fa-gavel text-amber-700" aria-hidden="true" />
+                Customer Dispute Statement & Audit Notes
+              </div>
+              <p className="font-mono whitespace-pre-wrap">{order.notes || "No notes provided."}</p>
+            </div>
+            <div>
+              <label htmlFor="admin-dispute-notes" className="block text-xs font-medium text-stone-700 mb-1">
+                Resolution Notes (optional)
+              </label>
+              <textarea
+                id="admin-dispute-notes"
+                rows={2}
+                value={disputeNotes}
+                onChange={(e) => setDisputeNotes(e.target.value)}
+                placeholder="Audit notes justifying customer refund or dispute dismissal..."
+                className="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-xs focus-visible:outline-2 focus-visible:outline-stone-900"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                loading={resolving === "dismiss"}
+                disabled={resolving !== null}
+                onClick={async () => {
+                  setActionError("");
+                  setResolving("dismiss");
+                  try {
+                    await resolveDispute(order.id, "dismiss", disputeNotes.trim() || null);
+                    await load();
+                  } catch (err) {
+                    setActionError(
+                      err instanceof ApiError
+                        ? friendlyApiMessage(err, "Failed to dismiss dispute.")
+                        : "Error"
+                    );
+                  } finally {
+                    setResolving(null);
+                  }
+                }}
+              >
+                Dismiss Dispute
+              </Button>
+              <Button
+                size="sm"
+                loading={resolving === "refund"}
+                disabled={resolving !== null}
+                onClick={async () => {
+                  setActionError("");
+                  setResolving("refund");
+                  try {
+                    await resolveDispute(order.id, "refund", disputeNotes.trim() || null);
+                    await load();
+                  } catch (err) {
+                    setActionError(
+                      err instanceof ApiError
+                        ? friendlyApiMessage(err, "Failed to refund order.")
+                        : "Error"
+                    );
+                  } finally {
+                    setResolving(null);
+                  }
+                }}
+              >
+                Issue Full Refund
+              </Button>
+            </div>
+          </div>
+        </Card>
       )}
 
       <Card title="Money">
